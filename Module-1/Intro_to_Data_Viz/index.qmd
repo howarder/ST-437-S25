@@ -19,7 +19,7 @@ filters:
   - webr
 ---
 
-## Learning Objectives
+
 
 ```{r echo=FALSE}
 library(countdown)
