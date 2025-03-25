@@ -1,0 +1,134 @@
+---
+title: "ST 437: Data Visualization"
+subtitle: "Course Overview & Information"
+
+# date: today
+# date-format: long
+format:
+  OSUstyle-revealjs:
+    logo: "images/OSULogo.png"
+    auto-stretch: false
+    scrollable: true
+    incremental: true
+execute: 
+  echo: true
+  warning: false
+---
+
+```{r echo=FALSE}
+library(countdown)
+```
+
+## Welcome to ST 437!
+
+### I'm glad you're here!
+
+::: nonincremental
+-   Please find a seat at one of the blue cards.
+-   Write your (preferred) name on the card.
+-   We'll get started at 4 pm!
+:::
+
+## Who am I?
+
+### Erin Howard (she/her)
+
+:::::: columns
+:::: {.column width="40%"}
+::: nonincremental
+-   A Hokie & a Beaver
+-   Skier, baker, & soccer player
+-   Statistics education enthusiast
+-   Dog mom and chicken care taker
+:::
+::::
+
+::: {.column width="60%"}
+![](pics.png/Slide1.png){width="511"}
+:::
+::::::
+
+## Who are you?
+
+### Brief introductions
+
+Tell us...
+
+::: nonincremental
+-   Your name (what you preferred to be called)
+-   Your major
+-   Why you're taking this class
+-   Is there something specific you're hoping to learn from this class or be able to do by the end of this term?
+-   Anything else we should know about you?
+:::
+
+## What's ST 437 All About?
+
+### Learning Outcomes
+
+::: nonincremental
+-   Critique a visualization based on its purpose and use or abuse of perceptual principles.
+-   Propose improvements to a visualization to enhance its effectiveness.
+-   Combine tools for data manipulation and visualization to collect, tidy, and manipulate data to create visualizations to answer questions of interest.
+-   Polish a visualization to publication-ready standards.
+-   Create data visualizations that incorporate ethical considerations.\
+:::
+
+## What's ST 437 All About?
+
+### 
+
+| Week | Topic                                         |
+|------|-----------------------------------------------|
+| 1    | Intro to Data Viz                             |
+| 2    | Data Manipulation & Tidying                   |
+| 3    | Fundamentals of Visual Encoding               |
+| 4    | Refining Visualizations & Graphical Integrity |
+| 5    | Communication with Visualizations             |
+| 6    | Advanced Visualization Tools & Customization  |
+| 7    | Presentation & Reproducibility                |
+| 8    | Case Studies & Critique                       |
+| 9    | Project Work & Polishing Visualizations       |
+| 10   | Presentations                                 |
+
+## General Course Structure
+
++--------------------------+----------------------------------+
+| Tuesdays (Weeks 1-9)     | Thursdays (Weeks 1-9)            |
++==========================+==================================+
+| *A bit more conceptual*  | *A bit more applied*             |
+|                          |                                  |
+| Lectures and discussions | Lab activity - bring your laptop |
++--------------------------+----------------------------------+
+
+| Tuesday & Thursday (Week 10)                                |
+|:------------------------------------------------------------|
+| Final "Conference Poster" Presentations (more info to come) |
+
+## Course Calendar
+
+### Updated version kept on *Course Calendar* Canvas page
+
+::: {style="position: relative; width: 100%; height: 0; padding-top: 56.2500%;  padding-bottom: 0; box-shadow: 0 2px 8px 0 rgba(63,69,81,0.16); margin-top: 1.6em; margin-bottom: 0.9em; overflow: hidden;  border-radius: 8px; will-change: transform;"}
+<!-- <iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;margin: 0;" src="https://www.canva.com/design/DAGiq23ipqs/a9W6uMXkR7FdH0_3763JjQ/view?embed" allowfullscreen="allowfullscreen" allow="fullscreen"> -->
+
+<!-- </iframe> -->
+:::
+
+## Course Logo Contest
+
+:::::: columns
+::: column
+![](hex.png){width="345"}
+:::
+
+:::: column
+::: nonincremental
+-   Design a hex sticker logo for our class!
+-   You can do this alone or with others.
+-   Submissions will be due on Friday, May 23.
+-   We'll vote on our favorite. The winning design will be made into hex stickers!
+-   More information on Canvas.
+:::
+::::
+::::::
