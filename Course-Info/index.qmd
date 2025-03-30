@@ -39,7 +39,7 @@ library(countdown)
 -   A Hokie & a Beaver
 -   Skier, baker, & soccer player
 -   Statistics education enthusiast
--   Dog mom and chicken care taker
+-   Dog lover and chicken care taker
 :::
 ::::
 
