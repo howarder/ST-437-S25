@@ -127,7 +127,7 @@ Now try rendering your .qmd file as a PDF.
 
 # Exploring Data with Visualizations
 
-For the remainder of this lab, we'll use a variety of visualization techniques to explore data. If we're interested in creating visualizations solely to get a quick-and-dirty understanding of our data, we may not need to spend a lot of time creating pretty visualizations. If that's the case, it may be more efficient to create visualizations using R's base graphics. If instead, we want to create visualizations to share with others, we should spend a little more time crafting nicer visualizations using the \`ggplot2\` package. In the following exercises, we'll do both!
+For the remainder of this lab, we'll use a variety of visualization techniques to explore data. If we're interested in creating visualizations solely to get a quick-and-dirty understanding of our data, we may not need to spend a lot of time creating pretty visualizations. If that's the case, it may be more efficient to create visualizations using R's base graphics. If instead, we want to create visualizations to share with others, we should spend a little more time crafting nicer visualizations using the `ggplot2` package. In the following exercises, we'll do both!
 
 Start by loading the `AER` package. The dataset we'll use for the following exercises, `CASchools`, is stored in this package.
 
@@ -180,7 +180,7 @@ ggplot(data = CASchools, aes(x = expenditure, y = read)) +
 Take a look at the help documentation and descriptions of the variables available in this dataset. Select two other numerical variables from the CASchools dataset and create a scatterplot using the base R function
 
 ```{r}
-
+# Your code goes here...
 ```
 
 and the `ggplot2` package.
