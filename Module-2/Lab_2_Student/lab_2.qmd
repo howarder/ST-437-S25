@@ -663,4 +663,4 @@ To demonstrate your understanding and comfort with wrangling data, you'll need t
 
 Please ensure you have executable code in all of the chunks labeled `# Your code goes here...` and have written answers to the two questions stated in the *Review & Scrutinize* section.
 
-In the YAML of this file, change `format` to `pdf` and `eval` to `TRUE`. Then render the document. Submit both your .qmd and PDF files to the **Data Wrangling Lab Activity** on Canvas.
+In the YAML of this file, change `format` to `pdf` and `eval` to `true`. Then render the document. Submit both your .qmd and PDF files to the **Data Wrangling Lab Activity** on Canvas.
