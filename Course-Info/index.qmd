@@ -29,7 +29,7 @@ library(countdown)
 -   We'll get started at 4 pm!
 :::
 
-## Who am I?
+## Who are we?
 
 ### Erin Howard (she/her)
 
@@ -46,6 +46,27 @@ library(countdown)
 ::: {.column width="60%"}
 ![](pics.png/Slide1.png){width="511"}
 :::
+::::::
+
+### Madeleine Sherry
+
+:::::: columns
+
+::: {.column width="60%"}
+![](images/mad.png){width="511"}
+:::
+
+:::: {.column width="40%"}
+::: nonincremental
+-   Whitman College alum
+-   Loves lacrosse, former college player, now HS coach! 
+-   Hails from Bainbridge Island, WA
+-   Avid reader
+-   Statistics grad student
+:::
+::::
+
+
 ::::::
 
 ## Who are you?
