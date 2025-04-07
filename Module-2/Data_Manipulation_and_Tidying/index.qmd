@@ -1,0 +1,133 @@
+---
+title: "Introduction to Data Visualization"
+
+# date: today
+# date-format: long
+format:
+  OSUstyle-revealjs:
+    logo: "images/OSULogo.png"
+    auto-stretch: false
+    scrollable: true
+    incremental: true
+execute: 
+  echo: true
+  warning: false
+webr:
+  packages: ['ggplot2', 'dplyr'] # Install R packages on document open
+  show-startup-message: false    # Disable displaying status of webR initialization
+filters:
+  - webr
+---
+
+
+
+```{r echo=FALSE}
+library(countdown)
+```
+
+## Share a Data Visualization
+
+-   Form groups of 2-3.
+-   Start by reintroducing yourself to your group.
+-   Pick one group member to start.
+-   As a group, look at the starting group member's data visualization and discuss the following.
+    -   What story does the visualization tell?
+    -   What do you find clear or confusing about this visualization?
+    -   Who do you think the intended audience is, and how does that shape the design?
+-   Be sure to leave enough time to repeat the above discussion for each group member's visualization.
+
+```{r echo=FALSE}
+countdown(minutes=6)
+```
+
+## What is visualization?
+
+ 
+
+ 
+
+ 
+
+::: fragment
+> **"A visualization is any kind of visual representation of information designed to enable communication, analysis, discovery, exploration, etc."** Alberto Cairo, *The Truthful Art*
+:::
+
+## Data Visualization Examples
+
+![](images/nyt1.png){fig-align="left"}
+
+![New York Times (https://www.nytimes.com/interactive/2024/12/18/us/tornadoes-2024.html)](images/nyt2.png){fig-align="left"}
+
+![Pew Research Center (https://www.pewresearch.org/politics/2025/02/20/americans-continue-to-view-several-economic-issues-as-top-national-problems/)](images/pew.png){fig-align="left"}
+
+![NOAA (https://www.nesdis.noaa.gov/imagery/media-stills-animation/infographics)](images/noaa.png){fig-align="left"}
+
+## Why visualize data?
+
+> **"Numerical quantities focus on expected values, graphical summaries on unexpected values."** John Tukey
+
+::: fragment
+![](images/blank_dino.png){fig-align="center"}
+:::
+
+## Why visualize data?
+
+> **"Numerical quantities focus on expected values, graphical summaries on unexpected values."** John Tukey
+
+![Autodesk (https://www.research.autodesk.com/publications/same-stats-different-graphs/)](images/DinoSequentialSmaller.gif){fig-align="center"}
+
+## Consider the purpose of a data visualization
+
+-   Who is it for?
+
+-   What will the graphic(s) be used for?
+
+-   Exploratory vs. publication ready
+
+:::{.columns}
+
+:::{.column}
+```{r echo=FALSE}
+library(ggplot2)
+
+```
+
+:::
+
+:::{.column}
+
+:::
+
+:::
+
+## What makes a "good" visualization?
+
+![Penn State University (https://www.psu.edu/news/research/story/iconic-graph-center-climate-debate)](images/hockeystick.png){fig-align="center"}
+
+## What makes a "good" visualization?
+
+:::::: columns
+:::: column
+**According to Alberto Cairo:**
+
+::: nonincremental
+-   Truthful
+
+-   Functional
+
+-   Beautiful
+
+-   Insightful
+
+-   Enlightening
+:::
+::::
+
+::: column
+**According to Edward Tufte:**
+
+"Graphical excellence is that which gives to the viewer the greatest number of ideas in the shortest time with the least ink in the smallest space"
+:::
+::::::
+
+[**According to the Students of ST 437:**]{.fragment}
