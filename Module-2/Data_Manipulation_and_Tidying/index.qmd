@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Data Visualization"
+title: "Data Manipulation and Tidying"
 
 # date: today
 # date-format: long
@@ -19,115 +19,130 @@ filters:
   - webr
 ---
 
-
-
 ```{r echo=FALSE}
 library(countdown)
 ```
 
-## Share a Data Visualization
+## Data Wrangling
 
--   Form groups of 2-3.
--   Start by reintroducing yourself to your group.
--   Pick one group member to start.
--   As a group, look at the starting group member's data visualization and discuss the following.
-    -   What story does the visualization tell?
-    -   What do you find clear or confusing about this visualization?
-    -   Who do you think the intended audience is, and how does that shape the design?
--   Be sure to leave enough time to repeat the above discussion for each group member's visualization.
+the process of converting messy, untidy data into a tidy format, making it suitable for data visualization and analysis
 
-```{r echo=FALSE}
-countdown(minutes=6)
-```
+-   **Data is often messy:** Real-world data is rarely provided in a tidy format.
 
-## What is visualization?
+-   **Industry challenges:** Many industries have poorly designed data structures, requiring data preparation before visualization.
 
- 
+-   **Rarely tidy datasets:** It is uncommon to receive a dataset that is already tidy.
 
- 
+## Data Structure and Vocabulary
 
- 
+::::: columns
+::: column
+Datasets used in statistical analyses are generally made up of **rows** and **columns**.
 
-::: fragment
-> **"A visualization is any kind of visual representation of information designed to enable communication, analysis, discovery, exploration, etc."** Alberto Cairo, *The Truthful Art*
+-   Datasets contain a collection of **values**.
+
+-   Each value belongs to a **variable** and an **observation.**
+
+    -   A **variable** contains all the values of a specific attribute or characteristic.
+
+    -   An **observation** contains all of the values that correspond to specific individual or unit on which information was collected.
 :::
-
-## Data Visualization Examples
-
-![](images/nyt1.png){fig-align="left"}
-
-![New York Times (https://www.nytimes.com/interactive/2024/12/18/us/tornadoes-2024.html)](images/nyt2.png){fig-align="left"}
-
-![Pew Research Center (https://www.pewresearch.org/politics/2025/02/20/americans-continue-to-view-several-economic-issues-as-top-national-problems/)](images/pew.png){fig-align="left"}
-
-![NOAA (https://www.nesdis.noaa.gov/imagery/media-stills-animation/infographics)](images/noaa.png){fig-align="left"}
-
-## Why visualize data?
-
-> **"Numerical quantities focus on expected values, graphical summaries on unexpected values."** John Tukey
-
-::: fragment
-![](images/blank_dino.png){fig-align="center"}
-:::
-
-## Why visualize data?
-
-> **"Numerical quantities focus on expected values, graphical summaries on unexpected values."** John Tukey
-
-![Autodesk (https://www.research.autodesk.com/publications/same-stats-different-graphs/)](images/DinoSequentialSmaller.gif){fig-align="center"}
-
-## Consider the purpose of a data visualization
-
--   Who is it for?
-
--   What will the graphic(s) be used for?
-
--   Exploratory vs. publication ready
-
-:::{.columns}
-
-:::{.column}
-```{r echo=FALSE}
-library(ggplot2)
-
-```
-
-:::
-
-:::{.column}
-
-:::
-
-:::
-
-## What makes a "good" visualization?
-
-![Penn State University (https://www.psu.edu/news/research/story/iconic-graph-center-climate-debate)](images/hockeystick.png){fig-align="center"}
-
-## What makes a "good" visualization?
-
-:::::: columns
-:::: column
-**According to Alberto Cairo:**
-
-::: nonincremental
--   Truthful
-
--   Functional
-
--   Beautiful
-
--   Insightful
-
--   Enlightening
-:::
-::::
 
 ::: column
-**According to Edward Tufte:**
+|              | treatmenta | treatmentb |
+|--------------|------------|------------|
+| John Smith   | \-         | 2          |
+| Jane Doe     | 16         | 11         |
+| Mary Johnson | 3          | 1          |
 
-"Graphical excellence is that which gives to the viewer the greatest number of ideas in the shortest time with the least ink in the smallest space"
+ 
+
+|            | John Smith | Jane Doe | Mary Johnson |
+|------------|------------|----------|--------------|
+| treatmenta | \-         | 16       | 3            |
+| treamentb  | 2          | 11       | 1            |
+
+Source: Wickham, H. (2014) *Tidy Data.*
 :::
+:::::
+
+## Tidy Data
+
+:::::: columns
+::: column
+Tidy data is a structured format that aligns the organization of a dataset with its underlying meaning. In tidy data:
+
+-   **Each variable has its own column:** Every column in the dataset corresponds to a specific variable or attribute.
+
+-   **Each observation has its own row:** Every row captures a single observation or data entry.
+
+-   **Each cell contains a single value:** Each cell holds one distinct piece of information for a particular variable and observation.
+:::
+
+:::: column
+::: fragment
+|              | treatment | result |
+|--------------|-----------|--------|
+| John Smith   | a         | \-     |
+| Jane Doe     | a         | 16     |
+| Mary Johnson | a         | 3      |
+| John Smith   | b         | 2      |
+| Jane Doe     | b         | 11     |
+| Mary Johnson | b         | 1      |
+:::
+::::
 ::::::
 
-[**According to the Students of ST 437:**]{.fragment}
+::: fragment
+In many industries, data are often imported using SQL to create narrower datasets. While we won’t cover SQL in this course, it’s a valuable skill to learn in the future. For now, we’ll focus on using R to manipulate and create subset datasets from larger datasets for focused analysis.
+:::
+
+## Causes of Untidy Data
+
+-   Column headers are values, not variable names
+
+-   Multiple variables stored in one column
+
+-   Variables are stored in both rows and columns
+
+-   Multiple types in one datasets
+
+-   One type in multiple datasets
+
+::: fragment
+![](images/tab1.png)
+
+![](images/tab2.png)
+
+![](images/tab3.png)
+
+![](images/tab4.png)
+:::
+
+## Other Messy Data Issues
+
+-   Incorrect/Inconsistent/Unrecognized Dates
+
+-   Void or Misspelled Variables
+
+## Tidying and Cleaning Data
+
+![](images/packages.png){fig-align="center" width="580"}
+
+Cheatsheets: <https://posit.co/resources/cheatsheets/>
+
+## Tidy Tools
+
+Once your data are in a tidy format, you can easily use tidy tools (tools that take tidy data as input):
+
+-   data manipulation functions (e.g.`filter()`, `group_by()`, `summarise()`)
+-   modeling functions (e.g. `lm()`)
+-   **visualization functions** (e.g. `ggplot()`)
+
+## Explore Tidy Data
+
+The embedded page below contains some interactive exercises developed by the very talented educator, Andrew Heiss. 
+
+Please work through the exercises, proceeding using the **Continue** button until you reach the point where the **Continue** button is no longer clickable.
+
+<iframe src="https://r-primers.andrewheiss.com/tidy-data/01-reshape-data/01-tidy-data.html" width="100%" height="500px" style="border:1px solid #ccc;"></iframe>
