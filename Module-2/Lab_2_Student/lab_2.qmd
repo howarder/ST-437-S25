@@ -8,7 +8,7 @@ date-format: long
 execute: 
   echo: true
   warning: false
-  eval: false # Before submitting your lab activity, change this to true
+  eval: true # Before submitting your lab activity, change this to true
 ---
 
 ## Learning Objectives
@@ -19,42 +19,6 @@ execute:
 4. **Ensure Data Accuracy and Consistency**: Gain skills in validating and maintaining the integrity of data throughout the wrangling process.
 5. **Draw Reliable Conclusions**: Build confidence in making well-supported decisions and insights based on meticulously prepared and clean data.
 
-## What is Data Wrangling?
-
-Data wrangling is the process of converting messy, untidy data into a tidy format, making it suitable for data visualization and analysis.
-
-- **Data is often messy:** Real-world data is rarely provided in a tidy format.
-- **Industry challenges:** Many industries have poorly designed data structures, requiring data preparation before visualization.
-- **Rarely tidy datasets:** It is uncommon to receive a dataset that is already tidy.
-
-
-### What is Tidy Data?
-
-Tidy data is a structured format that aligns the organization of a dataset with its underlying meaning. In tidy data:
-
-- **Each variable has its own column:** Every column in the dataset corresponds to a specific variable or attribute.
-- **Each observation has its own row:** Every row captures a single observation or data entry.
-- **Each cell contains a single value:** Each cell holds one distinct piece of information for a particular variable and observation.
-
-In most cases, data is often imported using SQL to create narrower datasets. While we won't cover SQL in this course, it's a valuable skill to learn in the future. For now, we'll focus on using R to manipulate and create subset datasets from larger datasets for focused analysis.
-
-### What Causes Untidy Data?
-
-- **Incorrect/Inconsistent Dates:** Dates can be tricky because they might be formatted differently across datasets or have errors like typos or missing parts. For example, some data might use "MM/DD/YYYY" while others use "YYYY-MM-DD," leading to confusion and potential errors when analyzing time-based data.
-
-- **Wide Format Times:** Time data is sometimes presented in a wide format, where each column represents a different time period. This structure can make it difficult to perform certain types of analysis, as many statistical and visualization tools prefer data in a long format, where each row represents a single observation at a specific time.
-
-- **Void or Misspelled Descriptions:** Descriptions and labels are often incomplete, missing, or contain typos. These errors can make it challenging to interpret the data correctly, especially when variables are not clearly defined or are inconsistent across different parts of the dataset.
-
-- **Missing Values:** Missing data is common and can occur in any part of a dataset, leading to gaps that can skew analysis or result in errors. Handling these missing values is crucial for ensuring that any conclusions drawn from the data are accurate.
-
-- **Condensed or Incorrect Headers:** Column names might be too short, unclear, or incorrectly labeled, leading to confusion about what the data actually represents. For example, a column labeled "Pop" might be ambiguous—does it refer to population, popularity, or something else?
-
-- **Row Content Split:** Sometimes, a single column contains data that should be divided into multiple columns, such as when a "Location" column includes both city and state. This issue can make it difficult to analyze the data separately or perform operations that rely on more granular details.
-These common issues contribute to untidy data, which can complicate analysis and lead to inaccurate results. 
-
-
-Mastering data wrangling is crucial because you might have to handle datasets with millions of rows and hundreds of columns. 
 
 
 ## Getting Started
