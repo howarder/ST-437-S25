@@ -8,7 +8,7 @@ date-format: long
 execute: 
   echo: true
   warning: false
-  eval: true # Before submitting your lab activity, change this to true
+  eval: false # Before submitting your lab activity, change this to true
 ---
 
 ## Learning Objectives
@@ -81,7 +81,6 @@ head(countriesExtraDs, 5)
 #### Description of the Dataset
 - **`country`**: Country name from a predefined list of 10 countries.
 - **`year`**: Years between 2010 and 2023.
-- **`region`**: Geographical region corresponding to each country.
 - **`category`**: Classification of the country as "First World," "Second World," or "Third World."
 - **`population`**: Real-world population size for each country and year.
 - **`gdp`**: Gross Domestic Product (GDP) in USD millions for each country and year.
@@ -100,11 +99,34 @@ head(countriesExtraDs, 5)
 
 **Important Concepts**
 
+- `Joining`: Combine the main dataset with the additional data based on country.
 - `Filtering`: Filter data based on conditions such as year, country, or region.
 - `Selecting`: Select specific columns for focused analysis.
 - `Mutating`: Create new columns, such as cases per 100,000 population.
 - `Summarizing`: Aggregate data by country, year, or region to find totals and averages.
-- `Joining`: Combine the main dataset with the additional data based on country.
+
+
+### Joining
+
+Joining combines data from the main dataset with additional data.
+
+#### Example
+
+```{r}
+joinedData <- left_join(countriesDs, countriesExtraDs, by = "country")
+
+head(joinedData, 5)
+```
+
+##### Visualization
+
+```{r}
+ggplot(joinedData, aes(x = continent, y = gdp_per_capita)) +
+  geom_boxplot() +
+  labs(title = "GDP per Capita Distribution by Continent",
+       x = "Continent", y = "GDP per Capita") +
+  theme_minimal()
+```
 
 ### Filtering
 
@@ -115,8 +137,8 @@ You are tasked with visualizing trends in life expectancy in Asian countries bet
 
 ##### Filtering Process
 ```{r}
-filteredData <- countriesDs |>
-  filter(year >= 2010 & year <= 2020 & region == "Asia")
+filteredData <- joinedData |>
+  filter(year >= 2010 & year <= 2020 & continent == "Asia")
 
 head(filteredData, 5)
 ```
@@ -139,9 +161,8 @@ Analyze the relationship between GDP per capita and life expectancy in European 
 
 ##### Filtering Process
 ```{r}
-filteredData <- countriesDs |>
-  filter(year >= 2015 & year <= 2020 & region == "Europe" & gdp_per_capita > 30000) |>
-  left_join(countriesExtraDs, by = "country")
+filteredData <- joinedData |>
+  filter(year >= 2015 & year <= 2020 & continent == "Europe" & gdp_per_capita > 30000) 
 
 head(filteredData, 5)
 ```
@@ -193,13 +214,7 @@ Filtering based on economic indicators allows for focused analysis on the relati
 # Your code goes here...
 ```
 
-5. **GDP Data with Missing Values**:
-   - **Filter**: Remove any entries with missing `gdp_per_capita` values for the years 2010-2020.
-   - **Purpose**: Ensure clean data for economic analysis, removing incomplete records that could skew results.
 
-```{r}
-# Your code goes here...
-```
 
 ### Selecting
 
@@ -237,13 +252,7 @@ ggplot(selectedData, aes(x = factor(year), y = gdp_per_capita, fill = country)) 
 # Your code goes here...
 ```
 
-3. **Choose columns** that exclude any geographical information and check the first 10 rows.
-
-```{r}
-# Your code goes here...
-```
-
-4. **Select and rename** the `country` and `population` columns to `nation` and `pop_size`, respectively.
+3. **Select and rename** the `country` and `population` columns to `nation` and `pop_size`, respectively.
 
 *Hint check out the help documentation for the `?rename` function from the `dplyr` package.
 
@@ -256,22 +265,19 @@ ggplot(selectedData, aes(x = factor(year), y = gdp_per_capita, fill = country)) 
 
 Mutating helps create new columns based on existing data.
 
-```{r}
-# Your code goes here...
-```
-
 #### Example
 
 ```{r}
 mutatedData <- countriesDs |>
-  mutate(gdp_total = gdp_per_capita * population)
+  mutate(gdp_total = gdp_per_capita * population) |>
+  left_join(countriesExtraDs, by = "country")
 
 head(mutatedData, 5)
 ```
 
 ##### Visualization
 ```{r}
-ggplot(mutatedData, aes(x = population, y = gdp_total, color = region)) +
+ggplot(mutatedData, aes(x = population, y = gdp_total, color = continent)) +
   geom_point(size = 2) +
   labs(title = "Population vs. Total GDP by Region",
        x = "Population", y = "Total GDP") +
@@ -293,13 +299,7 @@ ggplot(mutatedData, aes(x = population, y = gdp_total, color = region)) +
 # Your code goes here...
 ```
 
-4. **Create an `avg_region_birthrate` column** by summing the birth rates of each country within the same region and dividing by the number of countries in that region.
-
-```{r}
-# Your code goes here...
-```
-
-5. **Generate a column** that calculates the ratio of birth rate to life expectancy for each country.
+4. **Generate a column** that calculates the ratio of birth rate to life expectancy for each country in each year.
 
 ```{r}
 # Your code goes here...
@@ -335,7 +335,7 @@ ggplot(summaryData, aes(x = total_population, y = avg_life_expectancy, label = c
 
 
 #### Summarizing Challenges
-1. **Summarize the dataset** by finding the average temperature for each region.
+1. **Summarize the dataset** by finding the average temperature for each continent.
 
 ```{r}
 # Your code goes here...
@@ -366,27 +366,7 @@ ggplot(summaryData, aes(x = total_population, y = avg_life_expectancy, label = c
 ```
 
 
-### Joining
 
-Joining combines data from the main dataset with additional data.
-
-#### Example
-
-```{r}
-joinedData <- left_join(countriesDs, countriesExtraDs, by = "country")
-
-head(joinedData, 5)
-```
-
-##### Visualization
-
-```{r}
-ggplot(joinedData, aes(x = region, y = gdp_per_capita)) +
-  geom_boxplot() +
-  labs(title = "GDP per Capita Distribution by Continent",
-       x = "Continent", y = "GDP per Capita") +
-  theme_minimal()
-```
 
 
 ## Untidy Data Wrangling
@@ -397,7 +377,40 @@ Untidy data often comes in a "wide" format, where multiple variables are stored 
 
 #### Creating an Untidy Version
 
-To demonstrate this, let's take our dataset and select only the `country`, `year`, and `population` to see how pivoting works. 
+To demonstrate this, let's first work with a very small dataset. We'll create that dataset below. 
+
+```{r}
+temps_wide <- tribble(
+  ~ day, ~ air, ~ soil, 
+  1, 27, 15,
+  2, 31, 16,
+  3, 22, 15
+)
+
+temps_wide
+```
+
+To pivot the `temps_wide` dataset so that is in a tidy format, we can use the `pivot_longer()` function. This function takes the data as the first argument (below we'll specify that with a pipe) and the columns you want to stack in the second argument. 
+
+```{r}
+temps_long <- temps_wide |>
+  pivot_longer(c(air, soil))
+
+temps_long
+```
+
+If you want to create more specific column headers in the long format, you can do using the `names_to` and `values_to arguments`.
+
+```{r}
+temps_long <- temps_wide |>
+  pivot_longer(c(air, soil), names_to = "type", values_to = "temp")
+
+temps_long
+```
+
+We can do the inverse and widen a data set.
+
+To demonstrate this, let's take our dataset and select only the `country`, `year`, and `population`. 
 
 ```{r}
 # Create a wide format from the existing long format
@@ -429,7 +442,12 @@ longData <- wideData |>
 head(longData, 5)
 ```
 
-This process shows how data can be reshaped for different analytical needs. Wide format is useful for certain analyses but often needs to be converted to long format for modeling and visualization.
+For more information on ways to specify columns you want to select see the following help documentation. 
+
+```{r}
+?tidyr_tidy_select
+```
+
 
 
 
@@ -493,7 +511,7 @@ This creates a new column, `year_date`, which is now in the proper date format.
 
 ```{r}
 ggplot(countriesDs, aes(x = year_date, y = population, color = country)) +
-  geom_line(size = 1) +
+  geom_line(linewidth = 1) +
   labs(title = "Population Trends Over Time by Country",
        x = "Year", y = "Population") +
   theme_minimal()
@@ -509,29 +527,6 @@ ggplot(countriesDs, aes(x = year_date, y = population, color = country)) +
 # Your code goes here...
 ```
 
-2. **Create a quarterly date**:
-   - **Task**: Convert the `year` column into a date representing the first quarter (e.g., "2010-03-31").
-   - **Purpose**: Useful for quarterly analysis.
-
-```{r}
-# Your code goes here...
-```
-
-3. **Mid-year date conversion**:
-   - **Task**: Convert the `year` column to a date format, setting it as June 30th of each year.
-   - **Purpose**: Represents mid-year data points.
-
-```{r}
-# Your code goes here...
-```
-
-4. **Use year as a dynamic time period**:
-   - **Task**: Convert the `year` column to represent the last day of a chosen month (e.g., November).
-   - **Purpose**: Allows for flexibility depending on the analysis context.
-
-```{r}
-# Your code goes here...
-```
 
 
 
@@ -549,24 +544,23 @@ We’ll combine all the data wrangling techniques you’ve learned—`filtering`
 Here’s a step-by-step guide to transform and visualize data from 10 countries in the dataset:
 
 ```{r}
-# Step 1: Filter the dataset for Asian and European countries from 2020 to 2023
-filteredData <- countriesDs |>
-  filter(year >= 2020 & year <= 2023)
-
-# Step 2: Join with the additional dataset to get continent information
-joinedData <- filteredData |>
+# Step 1: Join with the additional dataset to get continent information
+joinedData <- countriesDs |>
   left_join(countriesExtraDs, by = "country")
 
+# Step 2: Filter the dataset to keep only European and Asian countries 2020 to 2023
+filteredData <- joinedData |>
+  filter(year >= 2020 & year <= 2023 & 
+           continent %in% c("Asia", "Europe"))
+
 # Step 3: Select relevant columns for analysis
-selectedData <- joinedData |>
+selectedData <- filteredData |>
   select(country, year, population, gdp_per_capita, life_expectancy, birth_rate, continent)
 
-# Step 4: Mutate the data to create new metrics
+# Step 4: Mutate the data to create new metric
 mutatedData <- selectedData |>
   mutate(
-    gdp_total = gdp_per_capita * population,
-    year_date = ymd(paste0(year, "-", ifelse(runif(n()) > 0.5, "06-30", "12-31")))
-  )
+    gdp_total = gdp_per_capita * population)
 
 # Step 5: Summarize the data to get average life expectancy, GDP per capita, and total population by country and continent
 summaryData <- mutatedData |>
