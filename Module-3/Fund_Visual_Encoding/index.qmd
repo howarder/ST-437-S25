@@ -50,7 +50,7 @@ library(palmerpenguins)
 ```{r}
 #| echo: false
 library(countdown)
-countdown(minutes=3)
+countdown(minutes=2)
 ```
 
 ## What is Visual Encoding?
