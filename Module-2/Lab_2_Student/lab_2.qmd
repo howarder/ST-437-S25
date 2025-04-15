@@ -37,7 +37,6 @@ library(dplyr)
 library(lubridate)
 library(tidyr)
 library(readr)
-library(lubridate)
 ```
 
 ### Download the Data
@@ -335,7 +334,7 @@ ggplot(summaryData, aes(x = total_population, y = avg_life_expectancy, label = c
 
 
 #### Summarizing Challenges
-1. **Summarize the dataset** by finding the average temperature for each continent.
+1. **Summarize the dataset** by finding the average temperature for each continent using the `countriesDs` and `countriesExtraDs` datasets.
 
 ```{r}
 # Your code goes here...
@@ -597,7 +596,7 @@ ggplot(summaryData, aes(
   geom_text(aes(label = country), hjust = 0.5, size = 3, color = "black") + # Labels centered
   theme_minimal() +
   theme(
-    text = element_text(family = "Georgia"),
+    #text = element_text(family = "Georgia"),
     plot.title = element_text(size = 11, face = "bold"), 
     plot.subtitle = element_text(size = 9, face = "italic"), 
     axis.title = element_text(size = 8),
