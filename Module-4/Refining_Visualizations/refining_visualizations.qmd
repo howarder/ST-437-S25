@@ -1,0 +1,325 @@
+---
+title: "Refining Visualizations"
+
+
+---
+
+```{r}
+#| include: false
+library(tidyverse)
+library(palmerpenguins)
+library(viridis)
+```
+
+## Learning Objectives
+
+-   Effectively implement ggplot tools to polish visualizations, including, not limited to:
+
+    -   the `forcats` package for handling and reordering categorical variable levels
+
+    -   `labs` for adjusting axis labels and titles
+
+    -   `stat_summary` and `annotate` for adding annotations
+
+    -   `theme` for adjusting general visualization parameters
+
+## Reordering using `forcats`
+
+```{r}
+#| echo: false
+facebook <- read_csv("facebook_data.csv")
+facebook <- facebook |>
+  rename(month = `Post Month`, 
+         weekday = `Post Weekday`,
+         hour = `Post Hour`,
+         total_interactions = `Total Interactions`, 
+         paid = Paid,
+         type = Type) |>
+  select(type, month, weekday, 
+         hour, paid, comment, 
+         like, share, total_interactions)
+facebook_subset <- facebook |>
+  filter(like < 3000)
+ggplot(data = facebook_subset, 
+       mapping = aes(x = type)) + 
+  geom_bar(aes(fill = type)) + 
+  scale_fill_viridis(discrete=TRUE, guide = "none")
+```
+
+::: fragment
+```{r}
+#| code-line-numbers: "3"
+library(forcats)
+ggplot(data = facebook_subset, 
+       mapping = aes(x = fct_infreq(type))) + 
+  geom_bar(aes(fill = type)) + 
+  scale_fill_viridis(discrete=TRUE, guide = "none")
+```
+:::
+
+::: fragment
+```{r}
+#| code-line-numbers: "2"
+ggplot(data = facebook_subset, 
+       mapping = aes(x = fct_rev(fct_infreq(type)))) + 
+  geom_bar(aes(fill = type)) + 
+  scale_fill_viridis(discrete=TRUE, guide = "none")
+```
+:::
+
+::: fragment
+```{r}
+#| code-line-numbers: "5"
+ggplot(data = facebook_subset, 
+       mapping = aes(x = fct_rev(fct_infreq(type)))) + 
+  geom_bar(aes(fill = type)) + 
+  scale_fill_viridis(discrete=TRUE, guide = "none") + 
+  theme(axis.text.x = element_text(angle = 45))
+```
+:::
+
+## Penguin Bill Ratio
+
+### Boxplot
+
+```{r}
+#| label: simple-box
+#| include: true
+penguins <- penguins |>
+  mutate(bill_ratio = bill_length_mm / bill_depth_mm)
+
+ggplot(penguins, aes(x = bill_ratio, y = species)) + 
+  geom_boxplot()
+```
+
+::: fragment
+```{r}
+#| label: box-2
+ggplot(penguins, aes(x = bill_ratio, y = species)) + 
+  geom_boxplot() + 
+  labs(x = "Bill Ratio = Bill Length / Bill Depth",
+       y = "Species",
+       title = "Bill Ratios of Palmer Penguins") + 
+  theme(axis.text = element_text(size = 10), 
+        axis.title = element_text(size = 15),
+        plot.title = element_text(size = 20))
+```
+:::
+
+## Penguin Bill Ratio
+
+### Histogram
+
+```{r}
+#| label: simple-hist
+h1 <- ggplot(penguins, aes(x = bill_ratio)) + 
+  geom_histogram(binwidth = 0.1, aes(fill = species)) + 
+  labs(x = "Bill Ratio = Bill Length / Bill Depth",
+       title = "Bill Ratios of Palmer Penguins") + 
+  theme(axis.text = element_text(size = 10), 
+        axis.title = element_text(size = 12),
+        plot.title = element_text(size = 15))
+h1
+```
+
+::: fragment
+### Overlaid Density Plots
+
+```{r}
+#| label: density-1
+#| message: false
+#| warning: false
+pal <- c("#FF8C00", "#A034F0", "#159090")
+
+d1 <- ggplot(penguins, aes(x = bill_ratio)) + 
+  geom_density(aes(fill = species), alpha = 0.5) + 
+  labs(x = "Bill Ratio = Bill Length / Bill Depth",
+       title = "Bill Ratios of Palmer Penguins", 
+       subtitle = "Overlaid Density Plots") + 
+  theme(axis.text = element_text(size = 10), 
+        axis.title = element_text(size = 12),
+        plot.title = element_text(size = 15)) + 
+  scale_fill_manual(values = pal) 
+
+d1
+```
+:::
+
+::: fragment
+### Ridge Density Plots
+
+```{r}
+#| label: ridge-1
+#| message: false
+#| warning: false
+library(ggridges)
+
+r1 <- ggplot(penguins, aes(x = bill_ratio, y = species)) +
+  geom_density_ridges(aes(fill = species)) +
+  labs(x = "Bill Ratio = Bill Length / Bill Depth",
+       title = "Bill Ratios of Palmer Penguins", 
+       subtitle = "Ridge Plots") + 
+  theme(axis.text.x = element_text(size = 10), 
+        axis.title = element_text(size = 12),
+        plot.title = element_text(size = 15), 
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) + 
+  scale_fill_manual(values = pal, guide = "none") + 
+  coord_cartesian(clip = "off") + 
+  annotate(
+    geom = "label", x = 2.03, y = 1,
+    label = "Adelie",
+    hjust = "left", color = "black"
+  ) + 
+  annotate(
+    geom = "label", x = 2.53, y = 2,
+    label = "Chinstrap",
+    hjust = "left", color = "black"
+  ) + 
+  annotate(
+    geom = "label", x = 3.05, y = 3,
+    label = "Gentoo",
+    hjust = "left", color = "black"
+  )
+
+r1
+```
+:::
+
+::: fragment
+### Use `patchwork` to show multiple plots at once
+
+```{r}
+#| message: false
+#| warning: false
+library(patchwork)
+
+h1 / (d1 | r1)
+```
+:::
+
+## Penguin Bill Ratio
+
+### Raincloud Plot
+
+```{r}
+#| label: raincloud
+#| code-fold: true
+penguins |> 
+  filter(!is.na(bill_ratio)) |> 
+  ggplot(aes(x = fct_rev(species), y = bill_ratio)) + 
+  ggdist::stat_halfeye(
+    aes(color = species, fill = species), 
+    point_color = NA, .width = 0, adjust = 0.5,
+    width = 0.75, justification = -0.4, 
+    alpha = 0.3
+  ) +
+  geom_boxplot(
+    aes(color = species), width = 0.42, outlier.shape = NA
+  ) + 
+  geom_point(
+    aes(color = species), shape = 21,
+    size = 2, 
+    position = position_jitter(seed = 1, width = 0.12)
+  ) + 
+  geom_point(
+    aes(fill = species), 
+    color = "transparent",
+    shape = 21,
+    size = 2, 
+    alpha = .3,
+    position = position_jitter(seed = 1, width = 0.12)
+  ) +
+   stat_summary(
+    geom = "text", 
+    fun = "median",
+    aes(label = round(after_stat(y), 2), color = species),
+    fontface = "bold",
+    size = 4.5,
+    vjust = -3.5
+  ) + 
+  coord_flip(xlim = c(1.2, NA), clip = "off") + 
+  scale_y_continuous(
+    limits = c(1.57, 3.8),
+    breaks = seq(1.6, 3.8, by = 0.2)
+  ) + 
+  scale_color_manual(values = pal, guide = "none") + 
+  scale_fill_manual(values = pal, guide = "none") + 
+  labs(x = NULL,
+       y = "Bill Ratio", 
+       title = "Bill Ratio of Palmer Penguins", 
+       subtitle = "Distribution of bill ratios, estimated as bill length divided by bill depth.") + 
+  theme_minimal() + 
+  theme(
+    panel.grid.minor = element_blank(), 
+    panel.grid.major.y = element_blank(),
+    axis.ticks = element_blank()
+  ) 
+```
+
+## Understanding the `ggplot` layers
+
+Using the `.qmd` file in Module 4 on Canvas, annoate the code used to create the raincloud plot.
+
+::: nonincremental
+Suggestions:
+
+-   incrementally add one layer at a time to see how it changes the visual
+
+-   add comments to the code chunk using `#`
+:::
+
+```{r}
+#| label: raincloud2
+#| eval: false
+penguins |> 
+  filter(!is.na(bill_ratio)) |> 
+  ggplot(aes(x = fct_rev(species), y = bill_ratio)) + 
+  ggdist::stat_halfeye(
+    aes(color = species, fill = species), 
+    point_color = NA, .width = 0, adjust = 0.5,
+    width = 0.75, justification = -0.4, 
+    alpha = 0.3
+  ) +
+  geom_boxplot(
+    aes(color = species), width = 0.42, outlier.shape = NA
+  ) + 
+  geom_point(
+    aes(color = species), shape = 21,
+    size = 2, 
+    position = position_jitter(seed = 1, width = 0.12)
+  ) + 
+  geom_point(
+    aes(fill = species), 
+    color = "transparent",
+    shape = 21,
+    size = 2, 
+    alpha = .3,
+    position = position_jitter(seed = 1, width = 0.12)
+  ) +
+   stat_summary(
+    geom = "text", 
+    fun = "median",
+    aes(label = round(after_stat(y), 2), color = species),
+    fontface = "bold",
+    size = 4.5,
+    vjust = -3.5
+  ) + 
+  coord_flip(xlim = c(1.2, NA), clip = "off") + 
+  scale_y_continuous(
+    limits = c(1.57, 3.8),
+    breaks = seq(1.6, 3.8, by = 0.2)
+  ) + 
+  scale_color_manual(values = pal, guide = "none") + 
+  scale_fill_manual(values = pal, guide = "none") + 
+  labs(x = NULL,
+       y = "Bill Ratio", 
+       title = "Bill Ratio of Palmer Penguins", 
+       subtitle = "Distribution of bill ratios, estimated as bill length divided by bill depth.") + 
+  theme_minimal() + 
+  theme(
+    panel.grid.minor = element_blank(), 
+    panel.grid.major.y = element_blank(),
+    axis.ticks = element_blank()
+  ) 
+```
