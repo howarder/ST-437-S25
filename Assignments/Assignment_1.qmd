@@ -1,0 +1,76 @@
+---
+title: "Assignment 1"
+subtitle: "ST 437 Data Visualization"
+author: "Student Name"
+format: html # Before submitting your lab activity, change this to pdf
+date: today
+date-format: long
+execute: 
+  echo: true
+  warning: false
+  message: false
+  eval: true
+---
+
+## Getting Started
+
+Load the necessary packages. It's possible you'll need additional packages than just the two listed below, depending on the types of visualizations you choose to create. If needed, you can add more libraries to the following chunk.
+
+```{r}
+library(tidyverse)
+library(lubridate)
+```
+
+You will need to complete the required tasks for this assignment (please see the rubric on the Assignment 1 page in Canvas) for **one** of the following two data options. Please delete the section that corresponds to whichever option you are not choosing to use.
+
+### Option 1: Rat Sighting Data
+
+If you choose this option, make sure you have the dataset from canvas stored in the same folder as this .qmd file. If the two are in different locations, the `read_csv()` function below will not run properly.
+
+The second section of code in the following chunk cleans up the dataset a bit for you. I recommend using the `rats_clean` data for the remainder of this assigment. Keep in mind, you may need to do more cleaning and tidying depending on the types of visualizations you choose to make.
+
+```{r}
+rats_raw <- read_csv("Rat_Sightings.csv")
+
+rats_clean <- rats_raw |>
+  rename(created_date = `Created Date`,
+         location_type = `Location Type`,
+         borough = Borough) |>
+  mutate(created_date = mdy_hms(created_date)) |>
+  mutate(sighting_year = year(created_date),
+         sighting_month = month(created_date),
+         sighting_day = day(created_date),
+         sighting_weekday = wday(created_date, label = TRUE, abbr = FALSE)) |>
+  filter(borough != "Unspecified")
+
+glimpse(rats_clean)
+```
+
+### Option 2: Baby Names Data
+
+For this option, the dataset is stored in the `babynames` package. You will likely need to install the package before you are able to run the following code chunk or render this document.
+
+```{r}
+library(babynames)
+glimpse(babynames)
+```
+
+## Your Task
+
+In this assignment, you'll apply the foundations of data visualization and visual encoding we've been discussing these first three weeks to create two plots. Using the dataset provided below, present **two** ggplot2 plots that attempt to answer questions about the data that you think are interesting. Your submission will consist of two files:
+
+-   a .pdf file with your two plots and their captions, and
+
+-   a .qmd file that documents your exploration and experimentation (this file should “Render" without error).
+
+The focus of this assignment is exploration and experimentation. Concentrate on answering each question in a variety of ways and exploring functionality of ggplot2, rather than making “perfect” plots. You will be graded for completeness, exploration and experimentation not the effectiveness of your graphics (see the rubric below).
+
+Use the space below to complete your exploration and create your visualizations.
+
+## Submit your work
+
+You'll need to submit your completed and rendered document to Canvas.
+
+Please ensure you have executable code in all of the chunks.
+
+In the YAML of this file, change `format` to `pdf`. Then render the document. Submit both your .qmd and PDF files to **Assignment 1** on Canvas.
