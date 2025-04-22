@@ -1,5 +1,5 @@
 ---
-title: "Refining Visualizations & Graphical Integrity"
+title: "Refining Visualizations"
 
 # date: today
 # date-format: long
@@ -24,10 +24,74 @@ filters:
 library(tidyverse)
 library(palmerpenguins)
 library(viridis)
-library(forcats)
 ```
 
 ## Learning Objectives
+
+-   Effectively implement ggplot tools to polish visualizations, including, not limited to:
+
+    -   the `forcats` package for handling and reordering categorical variable levels
+
+    -   `labs` for adjusting axis labels and titles
+
+    -   `stat_summary` and `annotate` for adding annotations
+
+    -   `theme` for adjusting general visualization parameters
+
+## Reordering using `forcats`
+
+```{r}
+#| echo: false
+facebook <- read_csv("facebook_data.csv")
+facebook <- facebook |>
+  rename(month = `Post Month`, 
+         weekday = `Post Weekday`,
+         hour = `Post Hour`,
+         total_interactions = `Total Interactions`, 
+         paid = Paid,
+         type = Type) |>
+  select(type, month, weekday, 
+         hour, paid, comment, 
+         like, share, total_interactions)
+facebook_subset <- facebook |>
+  filter(like < 3000)
+ggplot(data = facebook_subset, 
+       mapping = aes(x = type)) + 
+  geom_bar(aes(fill = type)) + 
+  scale_fill_viridis(discrete=TRUE, guide = "none")
+```
+
+::: fragment
+```{r}
+#| code-line-numbers: "3"
+library(forcats)
+ggplot(data = facebook_subset, 
+       mapping = aes(x = fct_infreq(type))) + 
+  geom_bar(aes(fill = type)) + 
+  scale_fill_viridis(discrete=TRUE, guide = "none")
+```
+:::
+
+::: fragment
+```{r}
+#| code-line-numbers: "2"
+ggplot(data = facebook_subset, 
+       mapping = aes(x = fct_rev(fct_infreq(type)))) + 
+  geom_bar(aes(fill = type)) + 
+  scale_fill_viridis(discrete=TRUE, guide = "none")
+```
+:::
+
+::: fragment
+```{r}
+#| code-line-numbers: "5"
+ggplot(data = facebook_subset, 
+       mapping = aes(x = fct_rev(fct_infreq(type)))) + 
+  geom_bar(aes(fill = type)) + 
+  scale_fill_viridis(discrete=TRUE, guide = "none") + 
+  theme(axis.text.x = element_text(angle = 45))
+```
+:::
 
 ## Penguin Bill Ratio
 
@@ -212,13 +276,14 @@ penguins |>
 
 Using the `.qmd` file in Module 4 on Canvas, annoate the code used to create the raincloud plot.
 
-:::{.nonincremental}
+::: nonincremental
 Suggestions:
 
 -   incrementally add one layer at a time to see how it changes the visual
 
 -   add comments to the code chunk using `#`
 :::
+
 ```{r}
 #| label: raincloud2
 #| eval: false
