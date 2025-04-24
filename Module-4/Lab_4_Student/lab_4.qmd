@@ -1,0 +1,237 @@
+---
+title: "Lab 4 | Refining Visualizations & Visualizing Uncertainty"
+subtitle: "ST 437 Data Visualization"
+format: html 
+date: today
+date-format: long
+execute: 
+  echo: true
+  warning: false
+  message: false
+  eval: true
+---
+
+## Getting Started
+
+First, ensure you have the necessary packages installed and loaded.
+
+::: callout-important
+## Downloading R-packages
+
+Use `install.packages('Name of Package')` to install any R packages you don't have.
+:::
+
+```{r}
+#| label: load-libraries
+library(tidyverse)
+library(ggridges)
+library(viridis)
+```
+
+Before moving on to the remainder of this activity, try rendering the document to both html and pdf. It's generally a good idea to render your document periodically so that if there's an issue, you can spot it more easily.
+
+## Load the Data
+
+Make sure you have the `salem_weather_2024.csv` file downloaded from Canvas and saved in the same location as this .qmd file. The dataset contains temperature and wind speed information for Salem, Oregon in 2024.
+
+It's helpful to have your code chunks named. Give the following chunk a label by clicking on the small, faint gear icon in the upper right corner of the chunk. In the Chunk Name field, specify a name for the code chunk below. I recommend doing this for all remaining chunks!
+
+```{r}
+salem24 <- read_csv("salem_weather_2024.csv")
+```
+
+The dataset contains four variables
+
+-   `DATE`: the date
+-   `TMAX`: the maximum temperature in tenths of degrees Celsius
+-   `TMIN`: the minimum temperature in tenths of degrees Celsius
+-   `AWND`: the average daily wind speed in tenths of meters per second
+
+## Clean the Data
+
+Currently the units that temperature and wind speed are reported in area a little unusual. At least not units we commonly communicate in. Use the `mutate` function to convert the temperature variables to degrees Fahrenheit and the wind speed variable to miles per hour. Use the following conversions:
+
+-   one tenth degrees Celsius can by converted to degrees Fahrenheit by multiplying by 0.18 then adding 32
+
+-   one tenth meters per second is approximately 0.2237 miles per hour
+
+Additionally, remove any rows with `NA` values (hint: use `drop_na()` at the end of your pipe sequence).
+
+```{r}
+# your code here
+```
+
+## Histograms
+
+#### Plot 1: Basic Histogram (Wind Speed)
+
+Create a basic (not too polished) histogram that displays the distribution of average daily wind speed (in miles per hour).
+
+```{r}
+# create a basic histogram
+```
+
+#### Plot 2: Polished Histogram (Wind Speed)
+
+Now create a polished version of the histogram. Polishing checklist:
+
+-   Plot Title
+
+-   Informative labels
+
+-   Set a binwidth
+
+-   Set the `boundary` argument in `geom_histogram` to 0 so that the bins are aligned with whole numbers
+
+-   Add white outlines to the bins so that they can be seen more distinctly
+
+-   Add x-axis breaks at each even number within the range of the windspeeds (hint: use `scale_x_continuous(breaks = seq(0, 20, by = 2))`)
+
+```{r}
+# create a polished histogram
+```
+
+#### Plot 3: Histograms Faceted by Month (Wind Speed)
+
+Create a new column in the dataset that contains the month of the observation. Within `mutate` use the `month` function to extract the month from `DATE`. To have the displayed by its full name, use the `label=TRUE` and `abbr=FALSE` arguments in the `month` function.
+
+```{r}
+# add a month column to the dataset
+```
+
+Create a series of histograms, one for each month, by faceting by month. Polishing checklist:
+
+-   Plot Title
+
+-   Informative labels
+
+-   Set a binwidth
+
+-   Set the `boundary` argument in `geom_histogram` to 0 so that the bins are aligned with whole numbers
+
+-   Add white outlines to the bins so that they can be seen more distinctly
+
+-   Adjust x-axis breaks so that the labels are readable (hint: use `scale_x_continuous`)
+
+-   Add color to each month's histogram
+
+-   Remove the unnecessary legend since each facet has a label (hint: use `guides(fill = "none")`)
+
+```{r}
+# create a series of histograms using facets
+  
+```
+
+*Consider: What information do the faceted histograms provide that the single histogram didn't?*
+
+## Density Plots
+
+#### Plot 4: Basic Density Plot (Wind Speed)
+
+Create a basic (not too polished) density plot that displays the distribution of average daily wind speed (in miles per hour).
+
+```{r}
+# create a basic density plot
+```
+
+#### Plot 5: Overlaid Density Plots (Wind Speed)
+
+Overlay transparent density plots, filled by month.
+
+```{r}
+# create overlaid density plots
+```
+
+#### Plot 6: Ridge Plots (Wind Speed)
+
+Even when we use transparent density plots, with 12 different levels of month, its difficult to interpret anything meaningful from the plot. Try creating a polished ridge plot instead. Polishing checklist:
+
+-   Plot Title
+
+-   Informative labels
+
+-   Adjust x-axis breaks so that the labels are readable, yet informative (i.e. not too infrequent)
+
+-   Add color to each month's density plot
+
+-   Remove the unnecessary legend since each facet has a label (hint: use `guides(fill = "none")`)
+
+-   Bonus: add a line for the median of each distribution by including the following arguments in the `geom_density_ridges` function:
+
+    -   `quantile_lines = TRUE`
+
+    -   `quantiles = 2`
+
+```{r}
+# create polished ridge plot 
+```
+
+#### Plot 7: Ridge Plots (High Temps)
+
+All of the previous plots have displayed information about average daily wind speed. Create a similar ridge plot for daily high temperatures. Be sure to update any titles and labels to reflect the data displayed.
+
+```{r}
+# create a polished ridge plot (high temps)
+```
+
+#### Plot 8: Ridge Plots (High Temps with Gradient)
+
+Instead of mapping the discrete month to color, let's try mapping the continuous temperatures to color using a gradient within each density plot.
+
+This task is a little trickier, so here are some hints:
+
+-   Instead of using `geom_density_ridges`, use the function `geom_density_ridges_gradient`
+
+    -   Within this function, embedded in the `aes` function, use the argument `fill = after_stat(x)`
+
+-   Add the `scale_fill_viridis_c(option = "plasma")` layer to your plot.
+
+    -   The `_c` in this layer specifies that you're filling using a continuous variable
+
+```{r}
+# create a polished ridge plot of high temps using gradient colors  
+```
+
+#### Plot 9: Ridge Plots (High and Low Temps with Gradient)
+
+Let's get even fancier! Ultimately, we'll want to display ridge plots for both low and high temps (side-by-side), for each month. First, we need to lengthen our data. Instead of having two columns, one for high temps and one for low temps, in the long format we want one column for temperature type, `temp_type`, (low or high) and a second column for the value of the temperature.
+
+To achieve this task, use the `pivot_longer` function introduced in the Week 2 lab.
+
+```{r}
+# tidy data into long format
+```
+
+With your long format data, you should now be able to create the suggested ridge plot. Here is some hints and guidelines:
+
+-   Include `linetype = temp_type` in the `aes` function to specify that the type of temperature should be mapped to line type. *This will only work if you named the column temp_type. If you picked a different name for the variable, use that.*
+
+```{r}
+# create ridge plots that include both high and low temps 
+```
+
+## Rain Cloud Plots
+
+#### Plot 10: Rain Cloud Plot 
+
+The final task is to create a rain cloud plot for one of the three variables (wind speed, high temps, or low temps). You may find it helpful to review your annotated rain cloud plot code from Tuesday.
+
+For this plot, assign it to the object `p` so that you can save the image in the final code chunk
+
+```{r}
+# create a rain cloud plot
+# store the plot in the object p 
+# once you have a plot assigned to p, 
+# you can display the plot simply by running p
+```
+
+Once you've created your plot, save it. In the chunk below, replace `lastname` with your last name. Change `eval:` and `include:` both to true. This will save your plot to the same directory that this .qmd file is save to.
+
+```{r}
+#| eval: false
+#| include: false
+
+ggsave("raincloud_lastname.png", p)
+```
+
+Once your plot is saved, upload it to the **Upload your rain cloud plot** page on Canvas.

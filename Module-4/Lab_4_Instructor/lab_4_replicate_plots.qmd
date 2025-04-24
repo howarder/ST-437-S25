@@ -1,0 +1,270 @@
+---
+title: ""
+subtitle: ""
+format: pdf 
+
+date-format: long
+execute: 
+  echo: false
+  warning: false
+  message: false
+  eval: true
+---
+
+
+
+```{r}
+#| label: load-libraries
+library(tidyverse)
+library(ggridges)
+library(viridis)
+```
+
+
+```{r}
+salem24 <- read_csv("salem_weather_2024.csv")
+```
+
+
+
+```{r}
+salem24 <- salem24 |> 
+  mutate(tmax_f = (TMAX*0.18)+32,
+         tmin_f = (TMIN*0.18)+32,
+         wind_mph = AWND*0.2237) |>
+  drop_na()
+```
+
+## Histograms
+
+#### Plot 1: Basic Histogram (Wind Speed)
+
+
+
+```{r}
+# create a basic histogram
+p1 <- ggplot(salem24, aes(x = wind_mph)) + 
+  geom_histogram()
+ggsave("p1.png", p1)
+```
+
+#### Plot 2: Polished Histogram (Wind Speed)
+
+
+```{r}
+p2 <- ggplot(salem24, aes(x = wind_mph)) + 
+  geom_histogram(binwidth = 1, 
+                 boundary = 0, 
+                 color = "white") + 
+  scale_x_continuous(breaks = seq(0,20,by=2)) + 
+  labs(title = "Distribution of Average Daily Wind Speed", 
+       subtitle = "Salem, Oregon 2024", 
+       x = "Wind Speed (mph)", 
+       y = "Count")
+
+ggsave("p2.png", p2)
+```
+
+#### Plot 3: Histograms Faceted by Month (Wind Speed)
+
+
+
+```{r}
+salem24 <- salem24 |>
+  mutate(month = month(DATE, label = TRUE, abbr = FALSE))
+```
+
+
+```{r}
+p3 <- ggplot(salem24, aes(x = wind_mph)) + 
+  geom_histogram(aes(fill = month),
+                 binwidth = 1, 
+                 color = "white",
+                 boundary = 0) +
+  scale_x_continuous(breaks = seq(0,20,by=5)) +
+  guides(fill = "none") + 
+  facet_wrap(vars(month)) + 
+  labs(title = "Distribution of Average Daily Wind Speed", 
+       subtitle = "Salem, Oregon 2024", 
+       x = "Wind Speed (mph)", 
+       y = "Count")
+
+ggsave("p3.png", p3)
+```
+
+
+## Density Plots
+
+#### Plot 4: Basic Density Plot (Wind Speed)
+
+
+
+```{r}
+p4 <- ggplot(salem24, aes(x = wind_mph)) + 
+  geom_density(fill = "grey")
+
+ggsave("p4.png", p4)
+```
+
+#### Plot 5: Overlaid Density Plots (Wind Speed)
+
+
+
+```{r}
+p5 <- ggplot(salem24, aes(x = wind_mph)) + 
+  geom_density(aes(fill = month), 
+               alpha = 0.5)
+
+ggsave("p5.png", p5)
+```
+
+#### Plot 6: Ridge Plots (Wind Speed)
+
+
+
+```{r}
+p6 <- ggplot(salem24, aes(x = wind_mph, y = fct_rev(month))) + 
+  geom_density_ridges(aes(fill = month), 
+                      alpha = 0.5,
+                      quantile_lines = TRUE,
+                      quantiles = 2) + 
+  coord_cartesian(clip = "off") + 
+  scale_x_continuous(breaks = seq(0,20,by=5)) +
+  guides(fill = "none") + 
+  labs(title = "Distribution of Average Daily Wind Speed", 
+       subtitle = "Salem, Oregon 2024", 
+       x = "Wind Speed (mph)", 
+       y = "") 
+
+ggsave("p6.png", p6)
+```
+
+#### Plot 7: Ridge Plots (High Temps)
+
+```{r}
+p7 <- ggplot(salem24, aes(x = tmax_f, y = fct_rev(month))) + 
+  geom_density_ridges(aes(fill = month), 
+                      alpha = 0.5,
+                      quantile_lines = TRUE,
+                      quantiles = 2) + 
+  coord_cartesian(clip = "off") +
+  guides(fill = "none") + 
+  labs(title = "Distribution of Daily High Temperature", 
+       subtitle = "Salem, Oregon 2024", 
+       x = "High Temp (F)", 
+       y = "") 
+
+ggsave("p7.png", p7)
+```
+
+#### Plot 8: Ridge Plots (High Temps with Gradient)
+
+```{r}
+p8 <- ggplot(salem24, aes(x = tmax_f, y = fct_rev(month))) + 
+  geom_density_ridges_gradient(aes(fill = after_stat(x)), 
+                      alpha = 0.5,
+                      quantile_lines = TRUE,
+                      quantiles = 2) + 
+  scale_fill_viridis_c("Temp (F)",
+                       option = "plasma") + 
+  coord_cartesian(clip = "off") +
+  labs(title = "Distribution of Daily High Temperature", 
+       subtitle = "Salem, Oregon 2024", 
+       x = "High Temp (F)", 
+       y = "") 
+p8
+ggsave("p8.png", p8)
+```
+
+#### Plot 9: Ridge Plots (High and Low Temps with Gradient)
+
+```{r}
+salem24_long <- salem24 |>
+  pivot_longer(cols = c(tmin_f, tmax_f),
+               names_to = "temp_type",
+               values_to = "temp") |>
+  mutate(temp_type = recode(temp_type,
+                            tmin_f = "Low",
+                            tmax_f = "High")) |>
+  select(DATE, temp_type, temp, month)
+```
+
+```{r}
+p9 <- ggplot(salem24_long, aes(x = temp, 
+                         y = fct_rev(month),
+                         fill = after_stat(x),
+                         linetype = temp_type)) +
+  geom_density_ridges_gradient( 
+                      alpha = 0.5,
+                      quantile_lines = TRUE,
+                      quantiles = 2) + 
+  scale_fill_viridis_c("Temp (F)",
+                       option = "plasma") +
+  scale_linetype("") + 
+  coord_cartesian(clip = "off") +
+  labs(title = "Distribution of Daily High and Low Temperatures", 
+       subtitle = "Salem, Oregon 2024", 
+       x = "Temperature (F)", 
+       y = "") 
+
+ggsave("p9.png", p9)
+```
+
+## Rain Cloud Plots
+
+#### Plot 10: Rain Cloud Plot (Wind Speed)
+
+```{r}
+#| fig-height: 8
+#| fig-width: 8
+p <- salem24 |>
+  ggplot(
+    aes(x = fct_rev(month), y = wind_mph)
+  ) + 
+  ggdist::stat_halfeye(
+    aes(color = month, fill = month),
+    point_color = NA, .width = 0, #adjust = -0.25,
+    #width = 0.75, 
+    justification = -0.2,
+    alpha = 0.7
+  ) + 
+  geom_boxplot(
+    aes(color = month), 
+    outlier.shape = NA,
+    width = 0.2
+  ) + 
+  geom_point(
+    aes(color = month), 
+    shape = 21,
+    size = 1.5,
+    position = position_jitter(seed = 1, width = 0.05)
+  ) + 
+  geom_point(
+    aes(fill = month), 
+    color = "transparent",
+    shape = 21,
+    size = 1.5,
+    alpha = 0.3,
+    position = position_jitter(seed = 1, width = 0.05)
+  ) + 
+  coord_flip(xlim = c(1.2, NA), clip = "off") + 
+  scale_y_continuous(
+    limits = c(0, 20),
+    breaks = seq(0, 20, by = 2)
+  ) + 
+  guides(fill = "none", color = "none") + 
+  labs(x = NULL, 
+       y = "Wind Speed (mph)", 
+       title = "Distribution of Wind Speeds",
+       subtitle = "Salem, Oregon 2024") + 
+  theme_minimal() + 
+  theme(
+    panel.grid.minor = element_blank(), 
+    panel.grid.major.y = element_blank(),
+    axis.ticks = element_blank()
+  )
+
+p
+```
+
+
