@@ -212,7 +212,7 @@ With your long format data, you should now be able to create the suggested ridge
 
 ## Rain Cloud Plots
 
-#### Plot 10: Rain Cloud Plot 
+#### Plot 10: Rain Cloud Plot
 
 The final task is to create a rain cloud plot for one of the three variables (wind speed, high temps, or low temps). You may find it helpful to review your annotated rain cloud plot code from Tuesday.
 
