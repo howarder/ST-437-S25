@@ -1,0 +1,177 @@
+---
+title: "Learning Shiny"
+
+# date: today
+# date-format: long
+format:
+  OSUstyle-revealjs:
+    logo: "images/OSULogo.png"
+    auto-stretch: false
+    scrollable: true
+    incremental: true
+execute: 
+  echo: true
+  warning: false
+---
+
+## What is Shiny?
+
+`shiny` is a R package that allows you to build interactive web applications called *Shiny Apps*.
+
+::: nonincremental
+-   **interactive** implies that the user of the app has some control over what is displayed in the app
+:::
+
+Today, we will recreate [a simple app](https://erin-howard.shinyapps.io/teaching_shiny/) using the palmer penguin data.
+
+## Creating a shiny app
+
+### Start simple!
+
+[Two options:]{.fragment}
+
+1.  Start a new project in R and select **New Directory \> Shiny Application**
+
+2.  Within an existing project, **File \> New File \> Shiny Web App...**
+
+[Either option opens a new file called `app.R` that contains the code for a very basic app using the `faithful` dataset.]{.fragment}
+
+[**Let's give it a try!** As soon as you have `app.R` open, click the **Run App** button in the upper right corner.]{.fragment}
+
+-   What are the user inputs (i.e., what can you as the user change)?
+
+-   What are the outputs (i.e., what is displayed as a result of changing the inputs)?
+
+-   What information is needed "behind the scenes?"
+
+## Explore the code
+
+-   What are the main components of the `app.R` code?
+
+    -   `library(shiny)` - load the package
+
+    -   `ui` - user interface controls the layout and appearance
+
+    -   `server` - contains the instructions needed to build the app
+
+    -   `shinyApp(ui = ui, server = server)` - creates the app using the instructions from the `ui` and `server`
+
+## Explore the code
+
+```         
+ui <- fluidPage(
+
+    # Application title
+    titlePanel("Old Faithful Geyser Data"),
+
+    # Sidebar with a slider input for number of bins 
+    sidebarLayout(
+        sidebarPanel(
+            sliderInput("bins",
+                        "Number of bins:",
+                        min = 1,
+                        max = 50,
+                        value = 30)
+        ),
+
+        # Show a plot of the generated distribution
+        mainPanel(
+           plotOutput("distPlot")
+        )
+    )
+)
+```
+
+::: fragment
+```         
+server <- function(input, output) {
+
+    output$distPlot <- renderPlot({
+        # generate bins based on input$bins from ui.R
+        x    <- faithful[, 2]
+        bins <- seq(min(x), max(x), length.out = input$bins + 1)
+
+        # draw the histogram with the specified number of bins
+        hist(x, breaks = bins, col = 'darkgray', border = 'white',
+             xlab = 'Waiting time to next eruption (in mins)',
+             main = 'Histogram of waiting times')
+    })
+}
+```
+:::
+
+## Explore the code
+
+Edit the shiny app code to
+
+-   change the title
+
+-   set the minimum value of the slider bar to 5
+
+-   change the histogram border color from white to a different color
+
+
+
+## Widgets
+
+**Control Widgets** are the interactive elements of your app.
+
+Here are just a few options
+
+(see more at <https://shiny.posit.co/r/getstarted/shiny-basics/lesson3/>)
+
+| function             | widget                                         |
+|----------------------|------------------------------------------------|
+| `sliderInput`        | a slider bar                                   |
+| `checkboxGroupInput` | a group of check boxes                         |
+| `checkboxInput`      | a single check box                             |
+| `varSelectInput`     | a select list of the variables in a data frame |
+
+## Let's build an app!
+
+We'll start from scratch. In a file named `app.R`, start with the following
+
+```
+library(shiny)
+
+# Define UI for application that draws a histogram
+ui <- page_sidebar(
+  
+)
+
+
+# Define server logic required to draw a histogram
+server <- function(input, output) {
+
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
+```
+
+## Sharing your app
+
+ 
+
+Once you've created an app you want to share with others, you can host it on [shinyapps.io](https://www.shinyapps.io/).
+
+ 
+
+See the [Shiny help documentation](https://shiny.posit.co/r/articles/share/deployment-web/) for detailed information about publishing your app.
+
+## Shiny Resources
+
+:::{.nonincremental}
+-   A great place to start: <https://shiny.posit.co/r/getstarted/shiny-basics/lesson1/>
+
+-   A collection of shiny components you can use in your app: <https://shiny.posit.co/r/components/>
+
+-   A collection of layout options for your app: <https://shiny.posit.co/r/layouts/>
+
+-   A collection of articles and helpful documentation for different types of Shiny problems: <https://shiny.posit.co/r/articles/>
+
+-   A gallery to get some inspiration: <https://shiny.posit.co/r/gallery/>
+
+-   An online book for when you're ready to read more: <https://mastering-shiny.org/>
+
+:::
