@@ -5,3 +5,4 @@
 - [Module 2 - Data Manipulation and Tidying](https://howarder.github.io/ST-437-S25/Module-2/Data_Manipulation_and_Tidying/#/title-slide)
 - [Module 3 - Fundamentals of Visual Encoding](https://howarder.github.io/ST-437-S25/Module-3/Fund_Visual_Encoding/#/title-slide)
 - [Module 4 - Refining Visualizations](https://howarder.github.io/ST-437-S25/Module-4/Refining_Visualizations/#/title-slide)
+- [Module 5 - Learning Shiny](https://howarder.github.io/ST-437-S25/Module-5/#/title-slide)
