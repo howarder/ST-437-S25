@@ -22,8 +22,6 @@ library(viridis)
 library(ggridges)
 ```
 
-## Learning Objectives
-
 # Presentation
 
 ## Building Plots in a Presentation
@@ -328,6 +326,33 @@ Source: Claus O. Wilke, *Data Visualization*
 
 e.g. incrementally adding layers of the raincloud plot
 :::
+
+## Interactive Annotations with `plotly`
+
+```{r}
+#| code-fold: true
+
+library(plotly)
+pp <- penguins |> 
+  filter(!is.na(bill_ratio)) |> 
+  ggplot(aes(x = fct_rev(species), y = bill_ratio)) + 
+  geom_boxplot(
+    aes(color = species), width = 0.42, outlier.shape = NA) + 
+  coord_flip(xlim = c(1.2, NA), clip = "off") + 
+  scale_y_continuous(
+    limits = c(1.57, 3.8),
+    breaks = seq(1.6, 3.8, by = 0.2)
+  ) + 
+  scale_color_manual(values = pal, guide = "none") + 
+  scale_fill_manual(values = pal, guide = "none") + 
+  labs(x = NULL,
+       y = "Bill Ratio", 
+       title = "Bill Ratio of Palmer Penguins", 
+       subtitle = "Distribution of bill ratios, estimated as bill length divided by bill depth.")
+  
+ggplotly(pp)
+  
+```
 
 ## Publicly Sharing Projects
 
