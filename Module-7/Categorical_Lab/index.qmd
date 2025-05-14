@@ -1,0 +1,268 @@
+---
+title: "Lab - Likert"
+format: pdf
+editor: visual
+---
+
+## What is a Likert scale?
+
+**Likert scales** often help us understand **opinion data**, and are formatted in symmetric agree/disagree scales. A common question could look like:
+
+**Q. To what level do you agree or disagree with the following statement: Pineapple belongs on pizza.**
+
+1)  Strongly disagree
+2)  Disagree
+3)  Neither agree or disagree
+4)  Agree
+5)  Strongly agree
+
+These types of questions are often used in surveys to gauge opinions, agreement, and overall satisfaction. With data in this form, it can be hard to visualize using our normal routes. In today's lab, we will dive into how we can best visualize these data and explore different styles of comparison.
+
+If you'd like to learn more about how we'll be using them in this lab, feel free to read the article attached below!
+
+<https://daydreamingnumbers.com/blog/4-ways-to-visualize-likert-scales/>.
+
+
+## Example: Job Satisfaction Survey - Introduction
+
+To better demonstrate the specific ways in which we can visualize Likert data, we will go through an example that explores the four suggested plotting styles.
+
+The data set that we're exploring today is the **Employee Perception Survey** (EPS) from the Public Sector Commission of Western Australia:
+
+"The purpose of this survey is to **capture employee views** about factors affecting their workplace, such as leadership, communication, work/life balance and performance development.
+
+The EPS is typically conducted in each public sector organization with more than 70 employees once every five years. To improve the representativeness of the sample, organizations were selected across a range of sizes and portfolios. In 2016, all employees in 11 public sector organisations were asked to complete the survey. The average response rate to the survey was 53%, with 3883 valid responses received."
+
+The information, quotes, and data from this site: <https://www.kaggle.com/datasets/annettecatherinepaul/likert-survey-for-job-satisfaction-psc?select=survey+%281%29.csv/>.
+
+Take a few minutes to explore the information by **opening the link above**. This should give you a deeper understanding of **how the scale works** for the survey, and **how we can find meaning from the variables** that are given to us in this data set. (Hint: Look at the drop downs called "Question Key" and "Response Key")
+
+## Data Download
+
+Before we start creating any visuals, we will load the data set into R. Download the EPS.csv file from Canvas and fill in the following code with your specific file path:
+
+```{r}
+library(readr)
+eps <- read_csv('~/Documents/st437/eps.csv',show_col_types = FALSE)
+head(eps, 5)
+```
+
+## Option 1 - 100% Stacked Bar
+
+Since we've already explored how the data set is formatted, we know that each column represents a question that was asked on the survey. The symmetric scales go from 1-7 representing:
+
+- "Very Satisfied" to "Very Dissatisfied"
+- "Strongly Agree" to "Strongly Disagree"
+
+(Some also include an 8th option, "Do not know or does not apply", so **be aware** of that when you choose your own questions to analyze later in the lab.)
+
+Our first way to visualize Likert data is to create a **100% Stacked Bar**. This means that on the percentages will add up to 100% for each of the categories that we create so the responses are easily comparable between different questions. 
+
+We will pick three questions to analyze for each of the different visual options:
+
+**A2e: I am sufficiently challenged by my work**
+
+**A2f: I am recognized for the contribution I make**
+
+**A2g: I am satisfied with the opportunities available to me for career progression in my current agency**
+
+The following code selects the three columns and saves them as a new data frame called *eps3* while removing any NA values, and we use "pivot_longer" to adjust the data set to make it easier to use:
+
+```{r}
+library(ggplot2)
+library(tidyverse)
+
+eps3 <- eps |>
+  select(A2e, A2f, A2g) |>
+  filter_at(vars(A2e, A2f, A2g), all_vars(!is.na(.))) 
+
+# Renaming to have better reference to the original questions
+eps3 <- rename(eps3, Challenged = A2e, Recognized = A2f, Growth = A2g)
+
+eps3 <- eps3 |>
+    pivot_longer(c(Challenged, Recognized, Growth))|>
+    arrange(value)
+
+# Renaming to have better reference to the true values of the columns
+eps3 <- rename(eps3, Response = value, Question = name)
+
+head(eps3, 5)
+```
+Once we have this, we can work with our understanding of ggplot2 and bar charts to create a stacked bar chart:
+
+```{r}
+ggplot(eps3, aes(fill = Response, y = Question, x = Response)) + 
+    geom_bar(position="fill", stat="identity")+
+    scale_fill_viridis_c()+
+  labs(
+    x = "Percent",
+    y = "",
+    title = "Employee Agreement by Question",
+    fill = ""
+  ) 
+```
+
+## Option 2 - Diverging bars with neutrals separate
+
+The next option for visualizing our data is to create a **diverging bar chart with neutrals separate**. This chart makes it really clear what is positive and negative, or like and dislike as they are separated quite obviously and take out the neutrals as well. 
+
+In this step, we will do a lot more *tidying* in order to make an informative graph. Look at the *comments* within the code chunk to learn more about what each step is doing! 
+
+```{r}
+# Create new response groups that correspond with number responses from the surveys
+eps3_grouped <- eps3 %>%
+  mutate(ResponseGroup = case_when(
+    Response %in% 7 ~ "Disagree strongly",
+    Response %in% 6 ~ "Disagree moderately",
+    Response %in% 5 ~ "Disagree slightly",
+    Response %in% c(4,8) ~ "Don't care/neutral",
+    Response %in% 3 ~ "Agree slightly",
+    Response %in% 2 ~ "Agree moderately",
+    Response %in% 1 ~ "Agree strongly"
+  ))
+
+# Groups and summarizes by question to create percent values
+eps3_percent <- eps3_grouped %>%
+  group_by(Question, ResponseGroup) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(Question) %>%
+  mutate(Percent = n / sum(n) * 100)
+
+# Creates negative percents for disagreement and positive for agreement
+eps3_percent <- eps3_percent %>%
+  mutate(PercentSigned = case_when(
+    ResponseGroup %in% c("Disagree strongly", "Disagree moderately", "Disagree slightly") ~ -Percent,
+    ResponseGroup %in% c("Agree strongly", "Agree moderately", "Agree slightly", "Don't care/neutral") ~ Percent
+  ))
+
+# Reorders our responses to be in the order we want
+eps3_percent$ResponseGroup <- factor(eps3_percent$ResponseGroup, levels = c("Disagree strongly", "Disagree moderately", "Disagree slightly", "Don't care/neutral", "Agree strongly","Agree moderately","Agree slightly"))
+
+# Plot!
+ggplot(eps3_percent, aes(x = PercentSigned, y = Question, fill = ResponseGroup)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(
+    values = c(  
+      "Agree strongly" = "blue4",
+  "Agree moderately" = "blue",
+  "Agree slightly" = "lightblue",
+  "Don't care/neutral" = "grey",
+  "Disagree slightly" = "orange",
+  "Disagree moderately" = "red",
+  "Disagree strongly" = "red4")
+  ) +
+  geom_vline(xintercept = 0, color = "gray70") +
+  labs(
+    x = "Percent",
+    y = "",
+    title = "Employee Agreement by Question",
+    fill = ""
+  ) +
+  theme_minimal() +
+  theme(legend.position = "top")
+
+```
+
+## Option 3 - Diverging bars with neutrals split
+
+This plot option will split up the neutrals so that it is easy for us to see the positive and negative sides of a question. There are lots of cons to this plot, as we may not want to split up neutrals since they are neither likes or dislikes, but for visual purposes it does make the differences obvious.
+
+```{r}
+# Adds in a response group category that will make it 0 for the don't care/neutral option
+eps3_percent <- eps3_percent %>%
+  mutate(PercentSigned = case_when(
+    ResponseGroup %in% c("Disagree strongly", "Disagree moderately", "Disagree slightly") ~ -Percent,
+    ResponseGroup %in% c("Agree strongly", "Agree moderately", "Agree slightly") ~ Percent,
+    ResponseGroup %in% c("Don't care/neutral") ~ 0
+  ))
+
+# Plot!
+ggplot(eps3_percent, aes(x = PercentSigned, y = Question, fill = ResponseGroup)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(
+    values = c(  
+      "Agree strongly" = "blue4",
+  "Agree moderately" = "blue",
+  "Agree slightly" = "lightblue",
+  "Don't care/neutral" = "grey",
+  "Disagree slightly" = "orange",
+  "Disagree moderately" = "red",
+  "Disagree strongly" = "red4")
+  ) +
+  geom_vline(xintercept = 0, color = "gray70") +
+  labs(
+    x = "Percent",
+    y = "",
+    title = "Employee Agreement by Question",
+    fill = ""
+  ) +
+  theme_minimal() +
+  theme(legend.position = "top")
+```
+
+
+## Option 4 - Small multiple bars
+
+This option for visualizing Likert data splits the responses up easily by question so we can see the distribution of responses quite well. The downside to this is that we lose our sense of comparison between questions as they are not showing overlapping areas.
+
+```{r}
+# Reorder again since the last graph had us do order them in a funny way to show the way we want
+eps3_percent$ResponseGroup <- factor(eps3_percent$ResponseGroup, levels = c("Disagree strongly", "Disagree moderately", "Disagree slightly", "Don't care/neutral","Agree slightly","Agree moderately", "Agree strongly"))
+
+# Plot!
+ggplot(eps3_percent, aes(x = Percent, y = ResponseGroup, fill = Question)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(
+    values = c(  
+      "Challenged" = "blue4",
+  "Growth" = "blue",
+  "Recognized" = "lightblue"
+  ) )+
+  labs(
+    x = "Percent",
+    y = "",
+    title = "Employee Agreement by Question",
+    fill = ""
+  ) +
+  theme_minimal() +
+  theme(legend.position = "top")+
+  facet_wrap(vars(Question))
+
+```
+
+## Now it's your turn!
+
+**1.** Using the same data, pick out 3 new questions that all have the same scale and explore them using one of the options above. What does the result tell you?
+
+```{r}
+# Your code here ...
+```
+
+
+**2.** Now use another option to explore the same thing. What are the pros and cons of using this method of visualization method?
+
+```{r}
+# Your code here ...
+```
+
+
+**3.** Using one of your visualizations from question **1** or **2**, play around with color to map the agreement scales better to the color palette. Is there a way to manually adjust or assign colors here? Or is there an already existing palette that looks good?
+
+```{r}
+# Your code here ...
+```
+
+
+**4.** 
+
+```{r}
+# Your code here ...
+```
+
+
+**5.** Find another Likert data set online and attach the link below!
+
+< Your link goes here! />.
+
+
+**All done!** Now render the document to a *pdf* and submit with the *qmd* file on Canvas!

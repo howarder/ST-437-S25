@@ -354,6 +354,22 @@ ggplotly(pp)
   
 ```
 
+## Interactive Annotations with `plotly`
+
+```{r}
+#| code-fold: true
+pp_scatter <- penguins |>
+  filter(!is.na(bill_ratio)) |>
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) + 
+  geom_point(aes(color = species)) + 
+  scale_color_manual(values = pal) + 
+  labs(x = "Bill Length (mm)",
+       y = "Bill Depth (mm)", 
+       title = "Palmer Penguins Bill Length vs. Depth")
+
+ggplotly(pp_scatter)
+```
+
 ## Publicly Sharing Projects
 
 -   For shiny apps, host for free on [shinyapps.io](https://www.shinyapps.io/)
