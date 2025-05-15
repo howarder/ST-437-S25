@@ -6,4 +6,4 @@
 - [Module 3 - Fundamentals of Visual Encoding](https://howarder.github.io/ST-437-S25/Module-3/Fund_Visual_Encoding/#/title-slide)
 - [Module 4 - Refining Visualizations](https://howarder.github.io/ST-437-S25/Module-4/Refining_Visualizations/#/title-slide)
 - [Modules 5/6 - Learning Shiny](https://howarder.github.io/ST-437-S25/Module-5/#/title-slide)
-- [Module 7 - Presentation & Reproducibility](https://howarder.github.io/ST-437-S25/Module-7/#/title-slide)
+- [Module 7 - Presentation & Reproducibility](https://howarder.github.io/ST-437-S25/Module-7/Presentation_and_Reproducibility/#/title-slide)
