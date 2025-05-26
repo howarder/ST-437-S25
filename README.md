@@ -7,3 +7,4 @@
 - [Module 4 - Refining Visualizations](https://howarder.github.io/ST-437-S25/Module-4/Refining_Visualizations/#/title-slide)
 - [Modules 5/6 - Learning Shiny](https://howarder.github.io/ST-437-S25/Module-5/#/title-slide)
 - [Module 7 - Presentation & Reproducibility](https://howarder.github.io/ST-437-S25/Module-7/Presentation_and_Reproducibility/#/title-slide)
+- [Module 9 - Peer Review](https://howarder.github.io/ST-437-S25/Module-9/Peer-Review/#/title-slide)
