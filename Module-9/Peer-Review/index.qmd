@@ -1,0 +1,103 @@
+---
+title: "Final Project Peer Review"
+
+# date: today
+# date-format: long
+format:
+  OSUstyle-revealjs:
+    logo: "images/OSULogo.png"
+    auto-stretch: false
+    scrollable: true
+    incremental: true
+execute: 
+  echo: true
+  warning: false
+---
+
+```{r echo=FALSE}
+library(countdown)
+```
+
+## Peer Review
+
+::: nonincremental
+1.  **Explore:** Review your partner's visualization without any discussion.
+
+2.  **Pitch:** Provide information/context/details about your visualization with your partner.
+
+3.  **Solicit feedback and advice:** Ask your partner the questions you identified when submitting the first draft.
+
+4.  **Share additional feedback:** Discuss comments you added to your partner's peer review worksheet.
+
+5.  **Review code**: *Time permitting,* discuss the reproducibility and quality of your code with your partner.
+:::
+
+## 1. Explore
+
+:::{.nonincremental}
+-   Trade/share your visualization with your partner. If you have a public link displaying your visualization, you may find sharing this as the easiest option.
+
+-   Spend 10 minutes silently exploring your partner's visualization.
+
+-   Add comments (both positive and constructive) to rubric categories 1-5 on the peer review worksheet.
+
+:::
+
+```{r echo=FALSE}
+countdown(minutes=10)
+```
+
+## 2. Pitch
+
+:::{.nonincremental}
+-   Select one partner to start.
+
+-   In less than 2 minutes, provide any information/details/context about your visualization that you think the viewer might benefit from hearing.
+
+-   Use this as practice for the symposium. Consider what you'd want to share with an audience member who is stopping by your visualization for a brief period of time.
+
+-   After 2 and a half minutes, switch and repeat with the second partner.
+:::
+
+-   Add comments (both positive and constructive) to rubric categories 4, 9 and others where appropriate on the peer review worksheet.
+
+```{r echo=FALSE}
+countdown(minutes=2.5)
+```
+
+## 3. Solicit feedback and advice
+
+:::{.nonincremental}
+
+-   As a part of your submission of the first draft, you submitted at least three questions to ask your peer review partner.
+
+-   Spend 10 minutes, asking and replying to the questions for one partner.
+
+-   After 10 minutes, switch to the other partner, and do the same for their questions.
+:::
+
+```{r echo=FALSE}
+countdown(minutes=10)
+```
+
+## 4. Share additional feedback
+
+:::{.nonincremental}
+
+-   Discuss any additional feedback or comments you've written on the peer review worksheet to provide context and so that your partner can understand your feedback when working on the final version of their project.
+:::
+
+```{r echo=FALSE}
+countdown(minutes=10)
+```
+
+## 5. Review code
+
+*Time permitting*
+
+:::{.nonincremental}
+
+-   Show your partner the code you used to create your visualization.
+
+-   Share feedback on the **Reproducibility** and **Code Quality** sections of the rubric.
+:::
