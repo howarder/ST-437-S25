@@ -100,4 +100,3 @@ countdown(minutes=10)
 -   Show your partner the code you used to create your visualization.
 
 -   Share feedback on the **Reproducibility** and **Code Quality** sections of the rubric.
-:::
