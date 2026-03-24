@@ -264,13 +264,13 @@ p <- salem24 |>
   ggplot(
     aes(x = fct_rev(month), y = wind_mph)
   ) + 
-  ggdist::stat_halfeye(
-    aes(color = month, fill = month),
-    point_color = NA, .width = 0, #adjust = -0.25,
-    #width = 0.75, 
-    justification = -0.2,
-    alpha = 0.7
-  ) + 
+  #ggdist::stat_halfeye(
+  #  aes(color = month, fill = month),
+  #  point_color = NA, .width = 0, #adjust = -0.25,
+  #  #width = 0.75, 
+  #  justification = -0.2,
+  #  alpha = 0.7
+  #) + 
   geom_boxplot(
     aes(color = month), 
     outlier.shape = NA,

@@ -48,26 +48,6 @@ library(countdown)
 :::
 ::::::
 
-### Madeleine Sherry
-
-:::::: columns
-
-::: {.column width="60%"}
-![](images/mad.png){width="511"}
-:::
-
-:::: {.column width="40%"}
-::: nonincremental
--   Whitman College alum
--   Loves lacrosse, former college player, now HS coach! 
--   Hails from Bainbridge Island, WA
--   Avid reader
--   Statistics grad student
-:::
-::::
-
-
-::::::
 
 ## Who are you?
 
@@ -79,7 +59,7 @@ Tell us...
 -   Your name (what you preferred to be called)
 -   Your major
 -   Why you're taking this class
--   Is there something specific you're hoping to learn from this class or be able to do by the end of this term?
+-   Something that excites you or that you're passionate about (this can be academic or person)
 -   Anything else we should know about you?
 :::
 
@@ -114,6 +94,7 @@ Tell us...
 
 ## General Course Structure
 
+
 +--------------------------+----------------------------------+
 | Tuesdays (Weeks 1-9)     | Thursdays (Weeks 1-9)            |
 +==========================+==================================+
@@ -122,21 +103,19 @@ Tell us...
 | Lectures and discussions | Lab activity - bring your laptop |
 +--------------------------+----------------------------------+
 
-| Tuesday & Thursday (Week 10)                      |
-|:--------------------------------------------------|
-| Final Symposium Presentations (more info to come) |
+### Beginning Week 2
 
-## Course Calendar
+Each class period will begin with **Data Viz in the News**
 
-### Updated version kept on *Course Calendar* Canvas page
 
-::: {style="position: relative; width: 100%; height: 0; padding-top: 56.2500%;  padding-bottom: 0; box-shadow: 0 2px 8px 0 rgba(63,69,81,0.16); margin-top: 1.6em; margin-bottom: 0.9em; overflow: hidden;  border-radius: 8px; will-change: transform;"}
-<iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;margin: 0;" src="https://www.canva.com/design/DAGiq23ipqs/a9W6uMXkR7FdH0_3763JjQ/view?embed" allowfullscreen="allowfullscreen" allow="fullscreen">
+### Week 10
 
-</iframe>
-:::
+Tuesday: Final Symposium Prep
 
-## Download R and RStudio
+Thursday: Final Symposium
+
+
+## Update or Download R and RStudio
 
 Instructions for downloading and updating R and RStudio can be found in the Getting Started module on Canvas.
 
@@ -153,15 +132,17 @@ Please bring a laptop with R and RStudio downloaded to class on Thursday.
 :::::: columns
 ::: column
 ![](hex.png){width="345"}
+
+
 :::
 
 :::: column
 ::: nonincremental
 -   Design a hex sticker logo for our class!
 -   You can do this alone or with others.
--   Submissions will be due on Friday, May 23.
+-   Submissions will be due on Friday, May 15.
 -   We'll vote on our favorite. The winning design will be made into hex stickers!
--   More information on Canvas.
 :::
+![](logo_437_25.png){width="345"}
 ::::
 ::::::

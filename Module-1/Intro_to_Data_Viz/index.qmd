@@ -19,8 +19,6 @@ filters:
   - webr
 ---
 
-
-
 ```{r echo=FALSE}
 library(countdown)
 ```
@@ -84,21 +82,17 @@ countdown(minutes=6)
 
 -   Exploratory vs. publication ready
 
-:::{.columns}
-
-:::{.column}
+::::: columns
+::: column
 ```{r echo=FALSE}
 library(ggplot2)
 
 ```
-
 :::
 
-:::{.column}
-
+::: column
 :::
-
-:::
+:::::
 
 ## What makes a "good" visualization?
 
