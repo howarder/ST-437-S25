@@ -1,9 +1,6 @@
 ---
 title: "Lab 1 | Introduction to Data Visualization"
 subtitle: "ST 437 Data Visualization"
-author: 
-  - Erin Howard
-  - Brian Cervantes Alvarez
 # date: today
 # date-format: long
 execute: 
@@ -17,7 +14,7 @@ format: html
 1.  Identify the components of a Quarto document.
 2.  Write and run code chunks from a Quarto document.
 3.  Render a Quarto document to both HTML and PDF.
-4.  Create basic visualizations using both base R and \`gglot2\` functions.
+4.  Create basic visualizations using both base R and `ggplot2` functions.
 
 # Using Quarto
 
@@ -33,7 +30,7 @@ There are three main components to Quarto document:
 
 ### The YAML Header
 
-Every Quarto document begins with the YAML header that appears inside three dashes `---`. The header controls document level settings, such as the document type, the title, and the author.
+Every Quarto document begins with the YAML header that appears inside three dashes `---`. The header controls document level settings, such as the document type, the title, and the author. In this document, everything you see above the **Learning Objectives** section was specified in the YAML. 
 
 ### Code Blocks
 
@@ -112,11 +109,13 @@ Up until this point, you've likely been reading this document directly in your R
 
 To render and preview your document, click the Render option in the horizontal menu across the top of your .qmd file. If a preview of your document does not appear in the Viewer pane on the right side of your RStudio window, click the gear icon next to the Render option and make sure Preview in Viewer Pane is selected.
 
+**Helpful reminder:** Render at the start and as you go! You can and should run code chunks directly in RStudio as you work through this .qmd file, but you should also render the entire document fairly often to ensure that changes you've made will result in a working document.
+
 ### Rendering to PDF
 
 To render your document to PDF, change the format option in the YAML from `html` to `pdf`.
 
-In order to create PDFs you will need to install a recent distribution of TeX. We recommend the use of TinyTeX, which you can install by running the following command in the **Terminal**. To open the Terminal, select the tab just to the right of the Console below. Simply type the following three words and hit return/enter.
+In order to create PDFs you will need to install a recent distribution of TeX. We recommend the use of TinyTeX, which you can install by running the following command in the **Terminal**. To open the Terminal, select the tab just to the right of the Console. Simply type the following three words and hit return/enter.
 
 ```         
 quarto install tinytex

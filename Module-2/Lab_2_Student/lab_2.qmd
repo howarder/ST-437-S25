@@ -49,60 +49,65 @@ library(readr)
 `Windows users`: Use ctrl + enter to run single or highlighted line(s). Use shift + enter to run entire code block
 :::
 
+In the following code chunk, the `read_csv()` function is used to import the two required datasets for this lab. For this the chunk to run properly, ensure you have downloaded datasets from the Lab 2 Canvas page **and stored those datasets in the same file directory as this .qmd file**.
+
 ```{r}
-#| autorun: TRUE
-# Specify the data URL using HTTPS
-url1 <- "https://howarder.github.io/ST-437-S25/Datasets/countries.csv"
-url2 <- "https://howarder.github.io/ST-437-S25/Datasets/countriesExtraInfo.csv"
-
-# Download the data files from the HTTPS URL and save it as
-# countries.csv & countriesExtraInfo.csv
-
-download.file(url1, "countries.csv")
-download.file(url2, "countriesExtraInfo.csv")
-
-# Check for the data.
-cat("After downloading the data, we now have:\n")
-list.files()
-
-# Read the countries data into R
-countriesDs <- read_csv("countries.csv", show_col_types = FALSE)
-countriesExtraDs <- read_csv("countriesExtraInfo.csv", show_col_types = FALSE)
+# Read the music data into R
+spotify <- read_csv("/Users/madeleinesherry/Documents/st437/spotify.csv", show_col_types = FALSE)
+artists <- read_csv("/Users/madeleinesherry/Documents/st437/artists.csv", show_col_types = FALSE)
 ```
+
 
 #### Verify Datasets with `head()`
 
 ```{r}
-head(countriesDs, 5)
-head(countriesExtraDs, 5)
+head(spotify, 5)
+head(artists, 5)
 ```
 
-#### Description of the Dataset
-- **`country`**: Country name from a predefined list of 10 countries.
-- **`year`**: Years between 2010 and 2023.
-- **`category`**: Classification of the country as "First World," "Second World," or "Third World."
-- **`population`**: Real-world population size for each country and year.
-- **`gdp`**: Gross Domestic Product (GDP) in USD millions for each country and year.
-- **`gdp_per_capita`**: GDP per capita, calculated as GDP divided by population.
-- **`life_expectancy`**: Life expectancy of citzens
-- **`birth_rate`**: Birth rate for each country and year
-- **`temperature`**: Average temperature in celsius per country
+
+Both datasets were found from Kaggle (https://www.kaggle.com/datasets/rishabhpancholi1302/spotify-most-popular-songs-dataset?resource=download and https://www.kaggle.com/datasets/vatsalmavani/spotify-dataset/data).
 
 
-#### Additional Dataset (`countriesExtra.csv`)
-- **`country`**: Matches the country names from the main dataset.
-- **`continent`**: Continent corresponding to each country.
+#### Description of the Main Dataset (`spotify.csv`)
+Audio Features (Extracted from Spotify API):
+- **`danceability`** – How suitable a track is for dancing (0.0 – 1.0).
+- **`energy`** – Intensity and activity level of a song (0.0 – 1.0).
+- **`loudness`** – Overall loudness in decibels (dB).
+- **`speechiness`** – Presence of spoken words in the track (0.0 – 1.0).
+- **`acousticness`** – Probability that a track is acoustic (0.0 – 1.0).
+- **`instrumentalness`** – Predicts if a track is instrumental (0.0 – 1.0).
+- **`liveness`** – Probability of a live audience (0.0 – 1.0).
+- **`valence`** – Musical positivity or happiness (0.0 – 1.0).
+- **`tempo`** – Beats per minute (BPM) of the track.
+- **`key & mode`** – Musical key and mode (major/minor).
+
+General Song Information:
+- **`song`** – Name of the song.
+- **`artist`** – Performing artist(s).
+- **`duration_ms`** – Duration of the song (in milliseconds).
+- **`release_date``** – Year when the song was released.
+- **`genre`** – Song’s primary genre classification.
+- **`popularity`** – Spotify popularity metric (0 – 1).
+- **`spotify_url`** – URL to the song on Spotify (not useful for us, but fun if you want to listen to the song!).
+
+
+#### Additional Dataset (`artists.csv`)
+- **`count`** -  Number of songs released by the artist that are used to calculate the averages.
+- **`artist`** - Performing artist(s).
+- **`avg_danceability`** – Average over all the artist's songs of how suitable a track is for dancing (0.0 – 1.0).
+- **`avg_duration_ms`** –  Average duration of the artist's songs (in milliseconds)
 
 
 ## Tidy Data Wrangling
 
 **Important Concepts**
 
-- `Joining`: Combine the main dataset with the additional data based on country.
-- `Filtering`: Filter data based on conditions such as year, country, or region.
+- `Joining`: Combine the main dataset with the additional data based on artist.
+- `Filtering`: Filter data based on conditions such as year, artist, or genre.
 - `Selecting`: Select specific columns for focused analysis.
-- `Mutating`: Create new columns, such as cases per 100,000 population.
-- `Summarizing`: Aggregate data by country, year, or region to find totals and averages.
+- `Mutating`: Create new columns, such as the ratio between danceability and energy.
+- `Summarizing`: Aggregate data by year, artist, or genre to find totals and averages.
 
 
 ### Joining
@@ -112,107 +117,152 @@ Joining combines data from the main dataset with additional data.
 #### Example
 
 ```{r}
-joinedData <- left_join(countriesDs, countriesExtraDs, by = "country")
+joinedData <- left_join(spotify, artists, by = "artist")
 
 head(joinedData, 5)
 ```
 
 ##### Visualization
 
-```{r}
-ggplot(joinedData, aes(x = continent, y = gdp_per_capita)) +
+```{r, warnings=FALSE}
+ggplot(joinedData, aes(x = genre, y = avg_danceability)) +
   geom_boxplot() +
-  labs(title = "GDP per Capita Distribution by Continent",
-       x = "Continent", y = "GDP per Capita") +
+  labs(title = "Average Danceability by Genre",
+       x = "Genre", y = "Average Danceability") +
   theme_minimal()
 ```
+
+### Handling Dates
+
+In some cases, it might be necessary to convert a `date` column from a categorical format into a proper date format for time series analysis or plotting purposes. Here’s how you can do that in R using the `lubridate` package (Cheat Sheet here: https://rawgit.com/rstudio/cheatsheets/main/lubridate.pdf)
+
+Though we use the `mutate` function before the section dedicated to it in this lab, it is necessary to put this first so that we can visualize trends over time throughout the rest of this lab.
+
+#### Example
+
+##### Converting `release_date`` to a date
+
+Though it looks like our data is already in the correct format, the `release_date` column is actually in character format. Let's convert the `year` column to a date format. The `lubridate` package is handy for converting characters to dates. Because the variable is currently in the form "month/day/year", we'll use the `mdy()` function. 
+
+Note, there are 19 observations in this dataset whose release date was not formatted properly (e.g., only year was provided, a range of years were provided, etc.). Once the code chunk below is run, those observations will have `NA` listed for `release_date`.
+
+
+```{r}
+# Ensure the lubridate package is loaded
+joinedData <- joinedData |> 
+  mutate(release_date = ymd(release_date))
+
+# Check the first few rows to see the new column
+head(joinedData, 5)
+```
+
+##### Extracting the year from the `date` column.
+
+Now, say we want to look at just the year that the song was released rather than the whole date. We can do that using the `year` function of the `lubridate` package.
+
+```{r}
+# Extract just the year from the 'date' column and make a new column
+joinedData <- joinedData |> 
+  mutate(year = year(release_date))
+```
+
+##### Visualization
+
+```{r}
+ggplot(joinedData, aes(x = year, y = loudness)) +
+  geom_line() +
+  labs(title = "Loudness Trends Over Time",
+       x = "Year", y = "Loudness") +
+  theme_minimal()
+```
+
+#### Challenges
+
+1. **Create a new 'month' column from the 'date' column**:
+   - **Task**: Extract the month from the `date`, and call it `month`.
+   - **Purpose**: Useful for representing data that summarizes monthly results.
+
+```{r}
+# Your code goes here...
+```
+
+
 
 ### Filtering
 
 Filtering is essential for narrowing down datasets to the most relevant information, making patterns easier to identify.
 
 #### Example 1
-You are tasked with visualizing trends in life expectancy in Asian countries between 2010 and 2020.
+You are tasked with visualizing trends in energy in Pop music released between 2015 and 2017. Notice: We are going to be using our adjusted dates that we created in the previous section.
 
 ##### Filtering Process
 ```{r}
-filteredData <- joinedData |>
-  filter(year >= 2010 & year <= 2020 & continent == "Asia")
+filteredData1 <- joinedData |>
+  filter(year >= 2015 & year <= 2017 & genre == "Pop")
 
-head(filteredData, 5)
+head(filteredData1, 5)
 ```
 
 ##### Visualization
 ```{r}
-ggplot(filteredData, aes(x = factor(year), y = life_expectancy, color = country)) +
-  geom_point(size = 2) +
-  labs(title = "Life Expectancy Trends in Asia (2010-2020)",
-       x = "Year", y = "Life Expectancy") +
+ggplot(filteredData1, aes(x = release_date, y = energy, color = genre)) +
+  geom_line() +
+  labs(title = "Energy in Pop Music Trends (2015-2017)",
+       x = "Date", y = "Energy") +
   theme_minimal()
 ```
 
 ##### What did we do here?
 
-By focusing on specific countries and years, filtering allows for more targeted and relevant visualizations, making it easier to analyze trends and patterns specific to the context.
+By focusing on specific genres and years, filtering allows for more targeted and relevant visualizations, making it easier to analyze trends and patterns specific to the context.
 
 #### Example 2
-Analyze the relationship between GDP per capita and life expectancy in European countries with a GDP per capita above $30,000 for the years 2015-2020.
+Analyze the relationship between duration and speechiness in Rap music with energy less than 0.5 for the years 2015-2020.
 
 ##### Filtering Process
 ```{r}
-filteredData <- joinedData |>
-  filter(year >= 2015 & year <= 2020 & continent == "Europe" & gdp_per_capita > 30000) 
+filteredData2 <- joinedData |>
+  filter(year >= 2015 & year <= 2020 & genre == "Rap" & energy < 0.5) 
 
-head(filteredData, 5)
+head(filteredData2, 5)
 ```
 
 ##### Visualization
 ```{r}
-ggplot(filteredData, aes(x = gdp_per_capita, y = life_expectancy, color = country)) +
-  geom_line() +
-  labs(title = "GDP per Capita vs. Life Expectancy in Europe (2015-2020)",
-       x = "GDP per Capita", y = "Life Expectancy") +
+ggplot(filteredData2, aes(x = duration_ms, y = speechiness, color = energy)) +
+  geom_point() +
+  labs(title = "Song Duration vs. Speechiness (in Rap Songs with Low Energy 2015-2020)",
+       x = "Song Duration (ms)", y = "Speechiness") +
   theme_minimal()
 ```
 
 ##### What did we do here?
 
-Filtering based on economic indicators allows for focused analysis on the relationship between wealth and life expectancy, removing noise from countries with different economic conditions.
-
-* We used a new (to this course) `geom` to create the plot above. Can you locate the `geom`? What does it do?
+Filtering based on song descriptors (energy, genre, and release date here) allows for focused analysis on the relationship between speechiness and duration, removing noise from different types of songs.
 
 #### Filtering Challenges
-1. **Population Size in Africa**:
-   - **Filter**: Only countries from Africa where the population exceeds 50 million.
-   - **Purpose**: Isolate data for large African nations to analyze trends specific to highly populated areas.
+1. **Recent Prolific Artists**:
+   - **Filter**: Only songs released after 2020 and where the artist has released more than 25 songs (*Reminder*: the number of songs an artist has released comes from the 'count' variable we added).
+   - **Purpose**: Isolate data for artists who have made a lot of music and have released songs recently.
 ```{r}
 # Your code goes here...
 ```
 
-2. **Economic Data in Europe**:
-   - **Filter**: Show data only for the years 2015-2020 for European countries with GDP per capita above $30,000.
-   - **Purpose**: Focus on wealthy European countries during a specific period to study economic outcomes.
+2. **Popular Rock Music**:
+   - **Filter**: Show data only for the years 1975-1990 for Rock music with popularity over 0.3.
+   - **Purpose**: Focus on popular Rock music from an era where it was popular.
    
 ```{r}
 # Your code goes here...
 ```
 
-3. **High Birth Rates in Asia**:
-   - **Filter**: Data for Asian countries where the birth rate is above 2.5.
-   - **Purpose**: Analyze regions with high birth rates, possibly indicating population growth trends.
+3. **Bruno's Most Danceable Songs**:
+   - **Filter**: Data for Bruno Mars where the danceability is above 0.7.
+   - **Purpose**: Analyze one artist's music with high danceability.
 
 ```{r}
 # Your code goes here...
 ```
-
-4. **Cold Regions in Asia**:
-   - **Filter**: Asian countries where the average temperature is below 10°C between 2010 and 2020.
-   - **Purpose**: Focus on colder regions in Asia to study how temperature may correlate with other demographic factors.
-   
-```{r}
-# Your code goes here...
-```
-
 
 
 ### Selecting
@@ -222,36 +272,36 @@ Selecting allows you to focus on specific columns relevant to your analysis.
 #### Example
 
 ```{r}
-selectedData <- filteredData |>
-  select(country, year, gdp_per_capita, life_expectancy)
+selectedData <- joinedData |>
+  select(artist, genre, acousticness, loudness)
 
 head(selectedData, 5)
 ```
 
 ##### Visualization
 ```{r}
-ggplot(selectedData, aes(x = factor(year), y = gdp_per_capita, fill = country)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(title = "GDP per Capita Over Time in Selected European Countries",
-       x = "Year", y = "GDP per Capita") +
+ggplot(selectedData, aes(x = acousticness, y = loudness)) +
+  geom_smooth() +
+  labs(title = "Acousticness vs. Loudness in Songs",
+       x = "Acousticness", y = "Loudness") +
   theme_minimal()
 ```
 
 #### Selecting Challenges
 
-1. **Select columns** related to economic indicators (e.g., `country`, `gdp_per_capita`, `population`) for further analysis.
+1. **Select columns** related to the overall 'upbeat-ness' of the songs (e.g., `danceability`, `energy`, `tempo`) for further analysis.
 
 ```{r}
 # Your code goes here...
 ```
 
-2. **Create a dataset** with only the `year`, `life_expectancy`, and `temperature` columns for all countries and show the first 5 rows.
+2. **Create a dataset** with only the `liveness`, `valence`, and `mode` columns for all songs and show the first 5 rows.
 
 ```{r}
 # Your code goes here...
 ```
 
-3. **Select and rename** the `country` and `population` columns to `nation` and `pop_size`, respectively.
+3. **Select and rename** the `duration_ms` and `avg_duration_ms` columns to `length` and `avg_length`, respectively.
 
 *Hint check out the help documentation for the `?rename` function from the `dplyr` package.
 
@@ -267,38 +317,38 @@ Mutating helps create new columns based on existing data.
 #### Example
 
 ```{r}
-mutatedData <- countriesDs |>
-  mutate(gdp_total = gdp_per_capita * population) |>
-  left_join(countriesExtraDs, by = "country")
+mutatedData <- joinedData |>
+  mutate(rel_danceability = danceability / avg_danceability)
 
 head(mutatedData, 5)
 ```
 
 ##### Visualization
 ```{r}
-ggplot(mutatedData, aes(x = population, y = gdp_total, color = continent)) +
+ggplot(mutatedData, aes(x = valence, y = rel_danceability, color = genre)) +
   geom_point(size = 2) +
-  labs(title = "Population vs. Total GDP by Region",
-       x = "Population", y = "Total GDP") +
+  labs(title = "Valence vs. Relative Danceability",
+       x = "Valence", y = "Relative Danceability") +
+  geom_hline(yintercept = 1)+
   theme_minimal()
 ```
 
 #### Mutating Challenges
-1. **Add a new column** to `mutatedData` that indicates whether a country's GDP per capita is above or below a certain threshold (e.g., $20,000).
+1. **Add a new column** to `mutatedData` that indicates whether a song's tempo is above or below a certain threshold (e.g., 0.6).
 
 ```{r}
 # Your code goes here...
 ```
 
-3. **Mutate the `temperature` column** to create a new column, `temperature_f`, that converts Celsius to Fahrenheit.
+2. **Mutate the `duration_ms` column** to create a new column, `duration_mins`, that converts milliseconds to minutes.
 
-*Hint:* $$F = \bigg(C \times \frac{9}{5}\bigg) + 32$$
+*Hint:* Minutes = Milliseconds/60,000
 
 ```{r}
 # Your code goes here...
 ```
 
-4. **Generate a column** that calculates the ratio of birth rate to life expectancy for each country in each year.
+3. **Generate a column** that calculates the ratio of acousticness to liveness for each song.
 
 ```{r}
 # Your code goes here...
@@ -306,16 +356,15 @@ ggplot(mutatedData, aes(x = population, y = gdp_total, color = continent)) +
 
 ### Summarizing
 
-Summarizing aggregates data by country, year, or region to find totals and averages.
+Summarizing aggregates data by some variable to find totals and averages.
 
 #### Example
 
 ```{r}
-summaryData <- countriesDs |>
-  group_by(country) |>
+summaryData <- joinedData |>
+  group_by(genre) |>
   summarize(
-    avg_life_expectancy = mean(life_expectancy, na.rm = TRUE),
-    total_population = sum(population, na.rm = TRUE)
+    avg_danceability = mean(danceability, na.rm = TRUE)
   )
 
 head(summaryData, 5)
@@ -324,47 +373,38 @@ head(summaryData, 5)
 ##### Visualization
 
 ```{r}
-ggplot(summaryData, aes(x = total_population, y = avg_life_expectancy, label = country)) +
-  geom_point(size = 2) +
-  geom_text(vjust = -0.5) +
-  labs(title = "Total Population vs. Average Life Expectancy by Country",
-       x = "Total Population", y = "Average Life Expectancy") +
+ggplot(summaryData, aes(x = genre, y = avg_danceability, fill = genre)) +
+  geom_bar(stat='identity')+
+  labs(title = "Genre vs. Average Song Danceability",
+       x = "Genre", y = "Average Song Danceability") +
   theme_minimal()
 ```
 
 
 #### Summarizing Challenges
-1. **Summarize the dataset** by finding the average temperature for each continent using the `countriesDs` and `countriesExtraDs` datasets.
+1. **Summarize the dataset** by finding the average popularity for all songs.
 
 ```{r}
 # Your code goes here...
 ```
 
-2. **Aggregate the data** to find the total population and average life expectancy for each continent.
+2. **For each artist,** find the total milliseconds of songs released and average tempo.
 
 ```{r}
 # Your code goes here...
 ```
 
-3. **Group the data** by country and summarize to find the maximum and minimum GDP per capita for each country.
+3. **Group the data** by genre and summarize to find the most popular song per genre.
 
 ```{r}
 # Your code goes here...
 ```
 
-4. **Summarize by year** to find the total population and average birth rate each year.
+4. **Summarize by genre** to find the total duration per genre and average valence per genre.
 
 ```{r}
 # Your code goes here...
 ```
-
-5. **Create a summary** that calculates the total population and average GDP per capita for countries classified as "First World."
-
-```{r}
-# Your code goes here...
-```
-
-
 
 
 
@@ -409,21 +449,21 @@ temps_long
 
 We can do the inverse and widen a data set.
 
-To demonstrate this, let's take our dataset and select only the `country`, `year`, and `population`. 
+To demonstrate this, let's take our dataset and select only the `song`, `year`, and `popularity`. 
 
 ```{r}
 # Create a wide format from the existing long format
-popData <- countriesDs |>
-  select(country, year, population)
+popData <- joinedData |>
+  select(song, year, popularity)
 ```
 
 With the three column dataset, convert it into a wide format, then back to a long format.
 
 ```{r}
-wideData <- countriesDs |>
-  pivot_wider(names_from = year, 
-              values_from = population, 
-              id_cols = country)
+wideData <- joinedData |>
+  pivot_wider(names_from = song, 
+              values_from = popularity, 
+              id_cols = year)
 
 # Preview the wide data
 head(wideData, 5)
@@ -434,8 +474,8 @@ Now, let's convert this wide data back to a long format.
 ```{r}
 # Convert the wide format back to long format
 longData <- wideData |>
-  pivot_longer(!country, names_to = "year", 
-               values_to = "population")
+  pivot_longer(!year, names_to = "song", 
+               values_to = "popularity")
 
 # Preview the long data
 head(longData, 5)
@@ -456,12 +496,12 @@ Sometimes, data stored in a single column needs to be split into multiple column
 
 #### Merging Two Columns into One
 
-Let's take the `country` and `year` columns and merge them into a single column.
+Let's take the `genre` and `year` columns and merge them into a single column.
 
 ```{r}
-# Combine 'country' and 'year' into a single column
-mergedData <- countriesDs |>
-  unite("country_year", country, year, sep = "_")
+# Combine 'genre' and 'year' into a single column
+mergedData <- joinedData |>
+  unite("genre_year", genre, year, sep = "_")
 
 # Preview the merged dataset
 head(mergedData, 5)
@@ -470,67 +510,13 @@ head(mergedData, 5)
 #### Splitting the Merged Column Back into Two
 
 ```{r}
-# Split the 'country_year' column back into 'country' and 'year'
+# Split the 'genre_year' column back into 'genre' and 'year'
 splitData <- mergedData |>
-  separate(country_year, into = c("country", "year"), sep = "_")
+  separate(genre_year, into = c("genre", "year"), sep = "_")
 
 # Preview the split dataset
 head(splitData, 5)
 ```
-
-This demonstrates how to handle situations where data needs to be recombined or separated for different purposes.
-
-### Handling Dates
-
-In some cases, it might be necessary to convert a `year` column from a numeric format (double) into a proper date format for time series analysis or plotting purposes. Here’s how you can do that in R using the `lubridate` package.
-
-#### Example
-
-##### Converting `year` to a Date
-
-Let's convert the `year` column into a date format, setting it as January 1st of that year.
-
-```{r}
-# Ensure the lubridate package is loaded
-# Convert the year column to a date format (January 1st of each year)
-countriesDs <- countriesDs |>
-  mutate(year_date = ymd(paste0(year, "-01-01")))
-
-# Check the first few rows to see the new column
-head(countriesDs, 5)
-```
-
-##### What did we do here?
-- **`paste0(year, "-01-01")`**: Combines the year with the string "-01-01" to create a date string like "2010-01-01".
-- **`ymd()`**: Converts the resulting string into a date object in the "Year-Month-Day" format.
-
-This creates a new column, `year_date`, which is now in the proper date format.
-
-##### Visualization
-
-```{r}
-ggplot(countriesDs, aes(x = year_date, y = population, color = country)) +
-  geom_line(linewidth = 1) +
-  labs(title = "Population Trends Over Time by Country",
-       x = "Year", y = "Population") +
-  theme_minimal()
-```
-
-#### Challenges
-
-1. **Convert year to end of year date**:
-   - **Task**: Convert the `year` column to a date format, but set it as December 31st of that year.
-   - **Purpose**: Useful for representing data that summarizes annual results.
-
-```{r}
-# Your code goes here...
-```
-
-
-
-
-
-
 
 
 
@@ -543,60 +529,66 @@ We’ll combine all the data wrangling techniques you’ve learned—`filtering`
 Here’s a step-by-step guide to transform and visualize data from 10 countries in the dataset:
 
 ```{r}
-# Step 1: Join with the additional dataset to get continent information
-joinedData <- countriesDs |>
-  left_join(countriesExtraDs, by = "country")
+# Step 1: Join with the additional dataset to get more artist information
+joinedDataV <- left_join(spotify, artists, by = "artist")
 
-# Step 2: Filter the dataset to keep only European and Asian countries 2020 to 2023
-filteredData <- joinedData |>
-  filter(year >= 2020 & year <= 2023 & 
-           continent %in% c("Asia", "Europe"))
+# Step 2: Mutate to get the dates in the correct format
+joinedDataV <- joinedDataV |> 
+  mutate(date = ymd(release_date)) |> 
+  mutate(year = year(date)) |> 
+  mutate(month = month(date))
+
+# Step 2: Filter the dataset to keep only Rap and R&B Songs from after 2010
+filteredDataV <- joinedDataV |>
+  filter(year >= 2010 & 
+           genre %in% c("R&b", "Rap"))
 
 # Step 3: Select relevant columns for analysis
-selectedData <- filteredData |>
-  select(country, year, population, gdp_per_capita, life_expectancy, birth_rate, continent)
+selectedDataV <- filteredDataV |>
+  select(song, artist, genre, popularity, year, valence, danceability, avg_danceability)
 
 # Step 4: Mutate the data to create new metric
-mutatedData <- selectedData |>
+mutatedDataV <- selectedDataV |>
   mutate(
-    gdp_total = gdp_per_capita * population)
+    rel_danceability = danceability / avg_danceability)
 
-# Step 5: Summarize the data to get average life expectancy, GDP per capita, and total population by country and continent
-summaryData <- mutatedData |>
-  group_by(continent, country) |>
+# Step 5: Summarize the data to get average popularity per artist and average danceability (based on the individual songs, not the artists)
+summaryDataV <- mutatedDataV |>
+  group_by(artist) |>
   summarize(
-    avg_life_expectancy = mean(life_expectancy, na.rm = TRUE),
-    avg_gdp_per_capita = mean(gdp_per_capita, na.rm = TRUE),
-    total_population_millions = sum(population, na.rm = TRUE) / 1e6  # Convert population to millions
+    avg_popularity = mean(popularity, na.rm = TRUE),
+    avg_valence = mean(valence, na.rm = TRUE),
+    time_avg_danceability = mean(danceability, na.rm = TRUE)
   ) |>
-  ungroup()
+  ungroup() |> 
+  arrange(desc(avg_popularity)) |> 
+  head(10)
 
 # Step 6: Create a publication-ready visualization
-ggplot(summaryData, aes(
-  x = avg_gdp_per_capita, 
-  y = avg_life_expectancy, 
-  size = total_population_millions,  # Use population in millions for size mapping
-  color = country
+ggplot(summaryDataV, aes(
+  x = time_avg_danceability, 
+  y = avg_valence, 
+  size = avg_popularity,  # Use average popularity for size mapping
+  color = artist
 )) +
   geom_point(alpha = 0.4) +
-  scale_y_continuous(limits = c(min(summaryData$avg_life_expectancy) - 1, 66)) +  # Adjust y-axis scale to go up to 66
+  scale_y_continuous(limits = c(0, 1)) +  # Adjust y-axis scale to go 0-1
+  scale_x_continuous(limits = c(0.2, .90)) +  # Adjust x-axis scale to go 0.2 - .9 (better fits data)
   scale_size_continuous(
-    range = c(5, 15),  # Adjust the bubble size range
-    name = "Total Population (Millions)", 
-    breaks = c(50, 200, 500, 1000, 1500),  # Adjust based on realistic population ranges in millions
-    labels = c("50M", "200M", "500M", "1B", "1.5B")  # Correct labels in millions
+    range = c(5, 25),  # Adjust the bubble size range
+    breaks = c(0,1)
   ) +
   scale_color_viridis_d(guide = "none") +  # Hide the color legend
   labs(
-    title = "Relationship Between GDP per Capita and Life Expectancy Across Countries",
-    subtitle = "Bubble size represents total population across 2020-2023",
-    x = "Average GDP per Capita (USD)",
-    y = "Average Life Expectancy (Years)"
+    title = "Relationship Between Danceability and Valence for Top 10 R&B/Rap Artists since 2010",
+    subtitle = "Bubble size represents average popularity of songs per artist",
+    x = "Average Danceability",
+    y = "Average Valence (Song Positivity)"
   ) +
-  geom_text(aes(label = country), hjust = 0.5, size = 3, color = "black") + # Labels centered
+  geom_text(aes(label = artist), hjust = 0.5, size = 3, color = "black") + # Labels centered
   theme_minimal() +
   theme(
-    #text = element_text(family = "Georgia"),
+    text = element_text(family = "Arial"),
     plot.title = element_text(size = 11, face = "bold"), 
     plot.subtitle = element_text(size = 9, face = "italic"), 
     axis.title = element_text(size = 8),

@@ -117,6 +117,9 @@ In many industries, data are often imported using SQL to create narrower dataset
 ![](images/tab3.png)
 
 ![](images/tab4.png)
+
+_All examples from Wickham, H. (2014) *Tidy Data.*_
+
 :::
 
 ## Other Messy Data Issues

@@ -56,10 +56,10 @@ library(countdown)
 Tell us...
 
 ::: nonincremental
--   Your name (what you preferred to be called)
+-   Your name (what you prefer to be called)
 -   Your major
 -   Why you're taking this class
--   Something that excites you or that you're passionate about (this can be academic or person)
+-   Something that excites you or that you're passionate about (this can be academic or personal)
 -   Anything else we should know about you?
 :::
 
