@@ -11,6 +11,7 @@ execute:
   eval: false # Before submitting your lab activity, change this to true
 ---
 
+
 ## Learning Objectives
 
 1. **Understand the Importance of Data Wrangling**: Recognize the critical role of data wrangling in preparing datasets for accurate and meaningful analysis.
@@ -53,8 +54,8 @@ In the following code chunk, the `read_csv()` function is used to import the two
 
 ```{r}
 # Read the music data into R
-spotify <- read_csv("/Users/madeleinesherry/Documents/st437/spotify.csv", show_col_types = FALSE)
-artists <- read_csv("/Users/madeleinesherry/Documents/st437/artists.csv", show_col_types = FALSE)
+spotify <- read_csv("spotify.csv", show_col_types = FALSE)
+artists <- read_csv("artists.csv", show_col_types = FALSE)
 ```
 
 
@@ -140,9 +141,9 @@ Though we use the `mutate` function before the section dedicated to it in this l
 
 #### Example
 
-##### Converting `release_date`` to a date
+##### Converting `release_date` to a date
 
-Though it looks like our data is already in the correct format, the `release_date` column is actually in character format. Let's convert the `year` column to a date format. The `lubridate` package is handy for converting characters to dates. Because the variable is currently in the form "month/day/year", we'll use the `mdy()` function. 
+Though it looks like our data is already in the correct format, the `release_date` column in the `spotify` dataset is actually in character format. Let's convert the `year` column to a date format. The `lubridate` package is handy for converting characters to dates. Because the variable is currently in the form "month/day/year", we'll use the `mdy()` function. 
 
 Note, there are 19 observations in this dataset whose release date was not formatted properly (e.g., only year was provided, a range of years were provided, etc.). Once the code chunk below is run, those observations will have `NA` listed for `release_date`.
 
@@ -242,7 +243,7 @@ Filtering based on song descriptors (energy, genre, and release date here) allow
 
 #### Filtering Challenges
 1. **Recent Prolific Artists**:
-   - **Filter**: Only songs released after 2020 and where the artist has released more than 25 songs (*Reminder*: the number of songs an artist has released comes from the 'count' variable we added).
+   - **Filter**: Only songs released after 2015 and where the artist has released more than 25 songs (*Reminder*: the number of songs an artist has released comes from the 'count' variable we added).
    - **Purpose**: Isolate data for artists who have made a lot of music and have released songs recently.
 ```{r}
 # Your code goes here...
@@ -354,9 +355,9 @@ ggplot(mutatedData, aes(x = valence, y = rel_danceability, color = genre)) +
 # Your code goes here...
 ```
 
-### Summarizing
+### Grouping and Summarizing
 
-Summarizing aggregates data by some variable to find totals and averages.
+Summarizing aggregates data by some variable to find totals, averages, and other summary measures. The `group_by()` function allows us to group observations based on a shared value or values.
 
 #### Example
 
@@ -394,7 +395,7 @@ ggplot(summaryData, aes(x = genre, y = avg_danceability, fill = genre)) +
 # Your code goes here...
 ```
 
-3. **Group the data** by genre and summarize to find the most popular song per genre.
+3. **Group the data** by genre and filter to find the most popular song per genre.
 
 ```{r}
 # Your code goes here...
@@ -438,11 +439,13 @@ temps_long <- temps_wide |>
 temps_long
 ```
 
-If you want to create more specific column headers in the long format, you can do using the `names_to` and `values_to arguments`.
+If you want to create more specific column headers in the long format, you can do using the `names_to` and `values_to` arguments.
 
 ```{r}
 temps_long <- temps_wide |>
-  pivot_longer(c(air, soil), names_to = "type", values_to = "temp")
+  pivot_longer(c(air, soil), 
+               names_to = "type", 
+               values_to = "temp")
 
 temps_long
 ```
@@ -484,6 +487,9 @@ head(longData, 5)
 For more information on ways to specify columns you want to select see the following help documentation. 
 
 ```{r}
+#| echo: false 
+# I set echo: false above because we don't want the document to render
+# and try to open the help documentation.
 ?tidyr_tidy_select
 ```
 
@@ -526,7 +532,7 @@ We’ll combine all the data wrangling techniques you’ve learned—`filtering`
 
 ### Creating a Professional-Quality Visualization
 
-Here’s a step-by-step guide to transform and visualize data from 10 countries in the dataset:
+Here’s a step-by-step guide to transform and visualize the relationship between Ddanceability and valence for the top 10 R&B/Rap artists since 2010:
 
 ```{r}
 # Step 1: Join with the additional dataset to get more artist information
@@ -608,7 +614,7 @@ Answer the following two questions about the plot created above.
 
 ## Submit your work
 
-To demonstrate your understanding and comfort with wrangling data, you'll need to submit your completed and rendered document to Canvas.
+To demonstrate your understanding and comfort with wrangling data, you'll need to submit your completed and rendered document to Gradescope.
 
 Please ensure you have executable code in all of the chunks labeled `# Your code goes here...` and have written answers to the two questions stated in the *Review & Scrutinize* section.
 

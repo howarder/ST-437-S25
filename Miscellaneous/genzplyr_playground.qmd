@@ -1,0 +1,17 @@
+---
+title: "genzplyr playground"
+format: html
+editor: visual
+---
+
+```{r}
+library(genzplyr)
+```
+
+```{r}
+mtcars |>
+  yeet(mpg > 20) |>
+  vibe_check(mpg, cyl, hp) |>
+  glow_up(kpg = mpg * 1.6) |>
+  slay(desc(mpg))
+```
