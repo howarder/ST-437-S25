@@ -280,9 +280,9 @@ Source: Claus O. Wilke, *Data Visualization*
 ::: fragment
 Common misconceptions:
 
--   the audience can immediately infer the points you're trying to make
+- the audience can immediately infer the points you're trying to make
 
--   the audience has the ability to rapidly interpret complex visualizations
+- the audience has the ability to rapidly interpret complex visualizations
 :::
 
 ::: fragment
@@ -372,17 +372,19 @@ ggplotly(pp_scatter)
 
 ## Publicly Sharing Projects
 
--   For shiny apps, host for free on [shinyapps.io](https://www.shinyapps.io/)
+- For shiny apps, host for free on [shinyapps.io](https://www.shinyapps.io/)
 
-    -   example: <https://erin-howard.shinyapps.io/teaching_shiny/>
+  - example: <https://erin-howard.shinyapps.io/teaching_shiny/>
 
--   For quarto presentations, documents, dashboards, etc., host for free on [quartopub.com](https://quartopub.com/)
+- For quarto presentations, documents, dashboards, etc., host for free on [connect.posit.cloud](https://connect.posit.cloud/)
 
-    -   example: <https://howarder.quarto.pub/quarto-pub-demo/>
+  - example: <https://019e1c70-ffe9-a397-7684-493f22f29ec1.share.connect.posit.cloud/>
 
--   For sharing code and files, host for free on [github](https://github.com/)
+  - A [beav.es](https://beav.es/) short link can be a nice way to share a long URL
 
-    -   example: <https://github.com/howarder/ST-437-S25>
+- For sharing code and files, host for free on [github](https://github.com/)
+
+  - example: <https://github.com/howarder/ST-437-S25>
 
 # Reproducibility
 
@@ -397,29 +399,33 @@ ggplotly(pp_scatter)
 ::: fragment
 ### Why is reproducibility important?
 
--   Future you can more easily figure out/recall what analysis you did.
+- Future you can more easily figure out/recall what analysis you did.
 
--   More easily make adjustments to your code/visualizations/analysis.
+- More easily make adjustments to your code/visualizations/analysis.
 
--   You and others can validate the findings.
+- You and others can validate the findings.
 
--   Provide code examples to others who want to extend the research.
+- Provide code examples to others who want to extend the research.
 :::
 
 ## Making Your Work Reproducible
 
--   Keep all relevant files (e.g., code, raw data, etc.) in the same project directory - use the Project feature in R!
+- Keep all relevant files (e.g., code, raw data, etc.) in the same project directory - use the Project feature in R!
 
--   Use relative paths instead of absolute paths when importing data.
+- Use relative paths instead of absolute paths when importing data.
 
--   All cleaning and analysis should be done using code. Avoid "by-hand" manipulation of data (e.g., cleaning in Excel).
+  - Relative path example: "/Users/howarder/Documents/ST-437/data.csv"
 
-    -   If any manual steps are unavoidable, keep a very thorough record and clearly document those steps to share with others.
+  - Absolute path example: "data.csv" where data.csv and the document importing the data are stored in the same directory
 
--   Provide narrative to accompany your code (e.g., comments, quarto documents that combine code and prose).
+- All cleaning and analysis should be done using code. Avoid "by-hand" manipulation of data (e.g., cleaning in Excel).
 
--   Keep a record of the software used, including package versions.
+  - If any manual steps are unavoidable, keep a very thorough record and clearly document those steps to share with others.
 
--   Follow code style guidelines: <https://style.tidyverse.org/>
+- Provide narrative to accompany your code (e.g., comments, quarto documents that combine code and prose).
 
--   Share your projects in a public repository (e.g., Github)
+- Keep a record of the software used, including package versions.
+
+- Follow code style guidelines: <https://style.tidyverse.org/>
+
+- Share your projects in a public repository (e.g., Github)

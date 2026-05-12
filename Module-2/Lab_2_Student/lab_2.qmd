@@ -184,7 +184,9 @@ ggplot(joinedData, aes(x = year, y = loudness)) +
    - **Purpose**: Useful for representing data that summarizes monthly results.
 
 ```{r}
-# Your code goes here...
+joinData |>
+  mutate() |>
+  head()
 ```
 
 
@@ -593,9 +595,7 @@ ggplot(summaryDataV, aes(
   ) +
   geom_text(aes(label = artist), hjust = 0.5, size = 3, color = "black") + # Labels centered
   theme_minimal() +
-  theme(
-    text = element_text(family = "Arial"),
-    plot.title = element_text(size = 11, face = "bold"), 
+  theme(plot.title = element_text(size = 11, face = "bold"), 
     plot.subtitle = element_text(size = 9, face = "italic"), 
     axis.title = element_text(size = 8),
     legend.title = element_text(size = 8), 
