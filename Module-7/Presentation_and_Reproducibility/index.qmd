@@ -414,9 +414,9 @@ ggplotly(pp_scatter)
 
 - Use relative paths instead of absolute paths when importing data.
 
-  - Relative path example: "/Users/howarder/Documents/ST-437/data.csv"
+  - Absolute path example: "/Users/howarder/Documents/ST-437/data.csv"
 
-  - Absolute path example: "data.csv" where data.csv and the document importing the data are stored in the same directory
+  - Relative path example: "data.csv" where data.csv and the document importing the data are stored in the same directory
 
 - All cleaning and analysis should be done using code. Avoid "by-hand" manipulation of data (e.g., cleaning in Excel).
 
